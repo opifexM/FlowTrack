@@ -1,5 +1,7 @@
 export default async function (fastify, opts) {
   fastify.get('/', async function (request, reply) {
-    return { root: true }
-  })
+    fastify.log.info('handler "/" is called');
+
+    return reply.view('index');
+  });
 }

@@ -1,5 +1,9 @@
 export default async function (fastify) {
-  fastify.get('/users', async () => {
-    return [{ id: 1, name: 'Alice' }];
+  fastify.get('/session/new', async function (request, reply) {
+    return reply.view('user/login');
+  });
+
+  fastify.get('/users/new', async function (request, reply) {
+    return reply.view('user/register');
   });
 }

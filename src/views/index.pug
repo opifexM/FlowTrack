@@ -1,0 +1,14 @@
+extends layout/page.pug
+
+block head
+  title= __('homepage.title')
+
+block content
+  h1.display-4.fw-bold.mt-4
+    .container
+      .row
+        .col-12
+          .card.shadow.bg-white.rounded-3
+            .card-body.p-5
+              h1.display-4.fw-bold.mb-0= __('homepage.headline')
+              p.lead= __('homepage.subheadline')

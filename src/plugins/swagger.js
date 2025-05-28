@@ -1,9 +1,9 @@
 import swagger from '@fastify/swagger';
-import swaggerUi from '@fastify/swagger-ui'
+import swaggerUi from '@fastify/swagger-ui';
 import fp from 'fastify-plugin';
 
 export default fp(async function (fastify, opts) {
-  await fastify.register(swagger, {
+  fastify.register(swagger, {
     openapi: {
       info: {
         title: 'FlowTrack API',
@@ -14,11 +14,11 @@ export default fp(async function (fastify, opts) {
     routePrefix: '/docs',
   });
 
-  await fastify.register(swaggerUi, {
+  fastify.register(swaggerUi, {
     routePrefix: '/docs',
     uiConfig: {
       docExpansion: 'full',
       deepLinking: false,
     },
-  })
-})
+  });
+});

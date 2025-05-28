@@ -24,7 +24,12 @@
     "globals": "^16.2.0"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.0.2",
     "@fastify/swagger-ui": "^5.2.2",
-    "dotenv": "^16.5.0"
+    "@fastify/view": "^11.1.0",
+    "dotenv": "^16.5.0",
+    "i18next": "^25.2.1",
+    "i18next-fs-backend": "^2.6.0",
+    "pug": "^3.0.3"
   }
 }

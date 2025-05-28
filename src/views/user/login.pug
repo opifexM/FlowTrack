@@ -1,0 +1,33 @@
+extends ../layout/page.pug
+
+block head
+  title Вход
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4 Вход
+    .row.justify-content-center
+      .col-12.col-md-8
+        .card.shadow-sm
+          .card-body.row.p-5
+            .col-12.col-md-6.d-flex.align-items-center.justify-content-center
+              img.rounded-circle(src="/assets/avatar.jpg", alt="Аватар")
+            .col-12.col-md-6.mt-3.mt-mb-0
+              form(action="/session", method="post")
+                .form-floating.mb-3
+                  input.form-control#data_email(
+                    name="data[email]"
+                    type="text"
+                    placeholder="Email"
+                    value=""
+                  )
+                  label(for="data_email") Email
+                .form-floating.mb-3
+                  input.form-control#data_password(
+                    name="data[password]"
+                    type="password"
+                    placeholder="Пароль"
+                    value=""
+                  )
+                  label(for="data_password") Пароль
+                input.btn.btn-primary(type="submit" value="Войти")
