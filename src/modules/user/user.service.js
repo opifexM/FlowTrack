@@ -35,7 +35,7 @@ export const UserService = {
     if (user === null) {
       return null;
     }
-    const { password, ...safe } = user;
+    const { password: _password, ...safe } = user;
     return safe;
   },
 

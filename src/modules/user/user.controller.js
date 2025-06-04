@@ -156,7 +156,7 @@ export const UserController = {
       userId: session.get('userId'),
     });
     logger.info('Starting session destruction');
-    await session.delete();
+    await session.regenerate();
     logger.info('Session destroyed successfully');
   },
 
