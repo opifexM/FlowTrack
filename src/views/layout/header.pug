@@ -4,15 +4,30 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-white
     button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbarToggleExternalContent')
       span.navbar-toggler-icon
     .collapse.navbar-collapse#navbarToggleExternalContent
-      ul.navbar-nav.justify-content-end.w-100
-        li.nav-item.me-auto
-          a.nav-link(href='/users') Пользователи
-        li.nav-item
-          a.nav-link(href='/session/new') Вход
-        li.nav-item
-          a.nav-link(href='/users/new') Регистрация
+      if isAuthenticated
+        ul.navbar-nav.justify-content-end.w-100
+          li.nav-item.me-auto
+            a.nav-link(href='/users')= __('menu.users')
+          li.nav-item
+            a.nav-link(href='/statuses')= __('menu.statuses')
+          li.nav-item
+            a.nav-link(href='/labels')= __('menu.labels')
+          li.nav-item
+            a.nav-link(href='/tasks')= __('menu.tasks')
+          li.nav-item
+            form(action=`/session`, method="post")
+              input(type="hidden", name="_method", value="delete")
+              input.btn.nav-link(type="submit", value=__('menu.logout'))
+      else
+        ul.navbar-nav.justify-content-end.w-100
+          li.nav-item.me-auto
+            a.nav-link(href='/users')= __('menu.users')
+          li.nav-item
+            a.nav-link(href='/session/new')= __('menu.login')
+          li.nav-item
+            a.nav-link(href='/users/new')= __('menu.register')
       ul.navbar-nav.ms-auto
         li.nav-item
-          a.nav-link(href='/lang/en') EN
-        li.nav-item
-          a.nav-link(href='/lang/ru') RU
+          a.btn.btn-sm.btn-outline-secondary(href='/lang/en') EN
+        li.nav-item.ms-2
+          a.btn.btn-sm.btn-outline-secondary(href='/lang/ru') RU

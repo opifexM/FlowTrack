@@ -1,6 +1,7 @@
 export default async function (fastify) {
   fastify.get('/lang/:lng', (request, reply) => {
     const { lng } = request.params;
+    request.log.info('GET /lang');
 
     reply
       .setCookie('locale', lng, {

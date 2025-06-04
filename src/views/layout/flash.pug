@@ -1,0 +1,15 @@
+- const allowedTypes = ['success', 'danger', 'warning', 'info']
+- const flashData = {}
+each messages, type in flash
+  if allowedTypes.includes(type) && Array.isArray(messages)
+    - flashData[type] = messages
+
+if Object.keys(flashData).length
+  each messages, type in flashData
+    each msg in messages
+      .alert.alert-dismissible.fade.show(
+        class="alert-" + type
+        role="alert"
+      )
+        | #{msg}
+        button.btn-close(type="button" data-bs-dismiss="alert" aria-label="Close")

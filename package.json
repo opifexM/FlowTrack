@@ -1,23 +1,24 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "description": "A full-featured task management system. It allows users to create, assign, and track tasks within a project.",
+  "description": "A comprehensive task management system that enables users to create, assign, and track tasks within a project.",
   "main": "index.js",
   "scripts": {
-    "start": "fastify start -l info index.js",
-    "dev": "fastify start -w -l info -P index.js",
+    "start": "npm run db:migrate && fastify start -l info index.js",
+    "dev": "npm run db:migrate && fastify start -w --ignore-watch='db/**' -l debug -P index.js",
+    "db:migrate": "knex migrate:latest",
     "lint": "eslint ."
   },
   "keywords": [],
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
-    "@fastify/autoload": "^6.3.0",
+    "@eslint/js": "^9.28.0",
+    "@fastify/autoload": "^6.3.1",
     "@fastify/cors": "^11.0.1",
     "@fastify/swagger": "^9.5.1",
-    "@stylistic/eslint-plugin": "^4.4.0",
-    "eslint": "^9.27.0",
+    "@stylistic/eslint-plugin": "^4.4.1",
+    "eslint": "^9.28.0",
     "fastify": "^5.3.3",
     "fastify-cli": "^7.4.0",
     "fastify-plugin": "^5.0.1",
@@ -25,11 +26,24 @@
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
-    "@fastify/swagger-ui": "^5.2.2",
+    "@fastify/flash": "^6.0.3",
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/middie": "^9.0.3",
+    "@fastify/secure-session": "^8.2.0",
+    "@fastify/static": "^8.2.0",
+    "@fastify/swagger-ui": "^5.2.3",
     "@fastify/view": "^11.1.0",
     "dotenv": "^16.5.0",
+    "fastify-method-override": "^1.5.10",
+    "fastify-method-override-wrapper": "^1.0.6",
+    "fastify-yup-schema": "^1.0.4",
     "i18next": "^25.2.1",
     "i18next-fs-backend": "^2.6.0",
-    "pug": "^3.0.3"
+    "knex": "^3.1.0",
+    "pg": "^8.16.0",
+    "pug": "^3.0.3",
+    "qs": "^6.14.0",
+    "sqlite3": "^5.1.7",
+    "yup": "^1.6.1"
   }
 }

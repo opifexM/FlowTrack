@@ -1,49 +1,66 @@
 extends ../layout/page.pug
 
 block head
-  title Регистрация
+  title= __('user-register.title')
 
 block content
   .container.wrapper.flex-grow-1
-    h1.display-4.fw-bold.mt-4 Регистрация
+    h1.display-4.fw-bold.mt-4= __('user-register.title')
     .row.justify-content-center
       .col-12.col-md-8
         .card.shadow-sm
           .card-body.row.p-5
             .col-12.col-md-6.d-flex.align-items-center.justify-content-center
-              img.rounded-circle(src="/assets/avatar.jpg", alt="Аватар")
+              img.rounded-circle(src="/assets/avatar.jpg", alt="Avatar")
             .col-12.col-md-6.mt-3.mt-mb-0
               form(action="/users", method="post")
                 .form-floating.mb-3
                   input.form-control#data_firstName(
                     name="data[firstName]"
                     type="text"
-                    placeholder="Имя"
-                    value=""
+                    placeholder=__('user-register.firstName')
+                    value=form.firstName || ''
+                    required
+                    minlength=USER_VALIDATION.FIRST_NAME.MIN
+                    maxlength=USER_VALIDATION.FIRST_NAME.MAX
                   )
-                  label(for="data_firstName") Имя
+                  label(for="data_firstName")= __('user-register.firstName')
+
                 .form-floating.mb-3
                   input.form-control#data_lastName(
                     name="data[lastName]"
                     type="text"
-                    placeholder="Фамилия"
-                    value=""
+                    placeholder=__('user-register.lastName')
+                    value=form.lastName || ''
+                    required
+                    minlength=USER_VALIDATION.LAST_NAME.MIN
+                    maxlength=USER_VALIDATION.LAST_NAME.MAX
                   )
-                  label(for="data_lastName") Фамилия
+                  label(for="data_lastName")= __('user-register.lastName')
+
                 .form-floating.mb-3
                   input.form-control#data_email(
                     name="data[email]"
-                    type="text"
-                    placeholder="Email"
-                    value=""
+                    type="email"
+                    placeholder=__('user-register.email')
+                    value=form.email || ''
+                    required
                   )
-                  label(for="data_email") Email
+                  label(for="data_email")= __('user-register.email')
+
                 .form-floating.mb-3
                   input.form-control#data_password(
                     name="data[password]"
                     type="password"
-                    placeholder="Пароль"
+                    placeholder=__('user-register.password')
                     value=""
+                    required
+                    minlength=USER_VALIDATION.PASSWORD.MIN
+                    maxlength=USER_VALIDATION.PASSWORD.MAX
                   )
-                  label(for="data_password") Пароль
-                input.btn.btn-primary(type="submit" value="Сохранить")
+                  label(for="data_password")= __('user-register.password')
+
+                input.btn.btn-primary(
+                  type="submit"
+                  value=__('user-register.submit')
+                )

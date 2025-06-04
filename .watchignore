@@ -1,0 +1,7 @@
+db/
+*.db
+node_modules/
+.git/
+public/
+.env
+package-lock.json

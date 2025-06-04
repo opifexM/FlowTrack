@@ -1,0 +1,31 @@
+extends ../layout/page.pug
+
+block head
+  title= __('user-list.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= __('user-list.title')
+
+    .table-responsive
+      table.table.table-borderless.table-striped.mt-5.bg-white
+        thead
+          tr
+            th ID
+            th= __('user-list.name')
+            th= __('user-list.email')
+            th= __('user-list.created_at')
+            th= __('user-list.action')
+        tbody
+          each user in users
+            tr
+              td= user.id
+              td= `${user.firstName} ${user.lastName}`
+              td= user.email
+              td= new Date(user.created_at).toLocaleString( __('local'))
+              td
+                .d-flex.flex-wrap
+                  a.btn.btn-primary.me-1(href=`/users/${user.id}/edit`)= __('user-list.edit')
+                  form(action=`/users/${user.id}`, method="post")
+                    input(type="hidden", name="_method", value="delete")
+                    input.btn.btn-danger(type="submit", value=__('user-list.delete'))

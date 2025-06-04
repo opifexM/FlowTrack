@@ -13,11 +13,14 @@ html(lang=locale)
       crossorigin="anonymous"
     )
 
-  body
+  body.d-flex.flex-column.min-vh-100
     include header.pug
 
-    .container.wrapper.flex-grow-1
-      block content
+    include flash.pug
+
+    main.flex-fill
+      .container.wrapper
+        block content
 
     include footer.pug
 

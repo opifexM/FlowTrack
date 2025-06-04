@@ -1,11 +1,11 @@
-import cors from '@fastify/cors';
 import fp from 'fastify-plugin';
+import middie from '@fastify/middie';
 
 export default fp(
   async function (fastify, opts) {
-    await fastify.register(cors);
+    await fastify.register(middie);
   },
   {
-    name: 'cors',
+    name: 'middie',
   },
 );

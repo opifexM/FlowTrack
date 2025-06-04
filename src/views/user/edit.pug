@@ -1,0 +1,47 @@
+extends ../layout/page.pug
+
+block head
+  title= __('user-edit.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= __('user-edit.title')
+    form(action=`/users/${user.id}`, method="post")
+      input(type="hidden", name="_method", value="patch")
+      .form-floating.mb-3
+        input.form-control(
+          id="data_firstName"
+          name="data[firstName]"
+          type="text"
+          placeholder=__('user-edit.firstName')
+          value=user.firstName
+        )
+        label(for="data_firstName")= __('user-edit.firstName')
+      .form-floating.mb-3
+        input.form-control(
+          id="data_lastName"
+          name="data[lastName]"
+          type="text"
+          placeholder=__('user-edit.lastName')
+          value=user.lastName
+        )
+        label(for="data_lastName")= __('user-edit.lastName')
+      .form-floating.mb-3
+        input.form-control(
+          id="data_email"
+          name="data[email]"
+          type="email"
+          placeholder=__('user-edit.email')
+          value=user.email
+        )
+        label(for="data_email")= __('user-edit.email')
+      .form-floating.mb-3
+        input.form-control(
+          id="data_password"
+          name="data[password]"
+          type="password"
+          placeholder=__('user-edit.password')
+        )
+        label(for="data_password")= __('user-edit.password')
+
+      button.btn.btn-primary(type="submit")= __('user-edit.submit')
