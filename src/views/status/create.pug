@@ -1,0 +1,23 @@
+extends ../layout/page.pug
+
+block head
+  title= __('status-create.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= __('status-create.title')
+    form(action="/statuses", method="post")
+      .form-floating.mb-3
+        input.form-control(
+          id="data_name"
+          name="data[name]"
+          type="text"
+          placeholder=__('status-create.name')
+          value=form.name || ''
+          required
+          minlength=STATUS_VALIDATION.NAME.MIN
+          maxlength=STATUS_VALIDATION.NAME.MAX
+        )
+        label(for="data_name")= __('status-create.name')
+
+      input.btn.btn-primary(type="submit", value=__('status-create.submit'))

@@ -232,6 +232,12 @@ export const UserService = {
       throw new ForbiddenError();
     }
 
+    const existingUser = await this.getUserByEmail(logger, db, data.email);
+    if (existingUser && existingUser.id.toString() !== inputId.toString()) {
+      logger.warn('Email already in use');
+      throw new EmailExistsError(data.email);
+    }
+
     const updatedUser = await UserModel.update(logger, db, inputId, data);
     logger.info({ updatedUserId: updatedUser.id }, 'User updated successfully');
 

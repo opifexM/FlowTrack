@@ -1,0 +1,217 @@
+import i18next from 'i18next';
+import { InUseError, NameExistsError } from './label.error.js';
+import { LabelService } from './label.service.js';
+import { LABEL_VALIDATION } from './schemas/label-validation.js';
+
+const { t } = i18next;
+
+export const LabelController = {
+  async showLabelList(request, reply) {
+    const logger = request.log.child({
+      component: 'LabelController',
+      method: 'showLabelList',
+    });
+    logger.info('Displaying label list page');
+
+    try {
+      const labelList = await LabelService.listLabels(
+        request.server.log,
+        request.server.knex,
+      );
+      const flash = reply.flash() || {};
+      const isAuthenticated = Boolean(request.session.get('userId'));
+      logger.info({ labelCount: labelList.length }, 'Label list retrieved successfully');
+
+      return reply.view('label/list', { flash, labels: labelList, isAuthenticated });
+    }
+    catch (error) {
+      logger.error({
+        error: error.message,
+        stack: error.stack,
+        errorType: error.constructor.name,
+        sessionUserId: request.session.get('userId'),
+        requestId: request.id,
+      }, 'Failed to display label list');
+      request.flash('danger', t('label-list.errors.general'));
+
+      return reply.redirect('/');
+    }
+  },
+
+  async showCreateForm(request, reply) {
+    const logger = request.log.child({
+      component: 'LabelController',
+      method: 'showCreateForm',
+    });
+
+    logger.info('Displaying label creation form');
+    const { formData: [form = {}] = [], ...flash } = reply.flash();
+    const isAuthenticated = Boolean(request.session.get('userId'));
+
+    return reply.view('label/create', { flash, form, LABEL_VALIDATION, isAuthenticated });
+  },
+
+  async create(request, reply) {
+    const logger = request.log.child({
+      component: 'LabelController',
+      method: 'create',
+    });
+    logger.info('Starting label creation');
+
+    try {
+      const createdLabel = await LabelService.createLabel(
+        request.server.log,
+        request.server.knex,
+        request.body.data,
+      );
+      logger.info({ labelId: createdLabel.id }, 'Label created successfully');
+      request.flash('info', t('label-create.success'));
+
+      return reply.redirect('/labels');
+    }
+    catch (error) {
+      logger.error({
+        error: error.message,
+        stack: error.stack,
+        errorType: error.constructor.name,
+        sessionUserId: request.session.get('userId'),
+        requestId: request.id,
+      }, 'Label creation failed');
+      request.flash('formData', request.body.data);
+
+      if (error instanceof NameExistsError) {
+        request.flash('warning', t('label-create.errors.nameExists'));
+      }
+      else {
+        request.flash('danger', t('label-create.errors.general'));
+      }
+
+      return reply.redirect('/labels/new');
+    }
+  },
+
+  async showEditForm(request, reply) {
+    const logger = request.log.child({
+      component: 'LabelController',
+      method: 'showEditForm',
+      inputId: request.params.id,
+    });
+    logger.info('Displaying label edit form');
+
+    try {
+      const foundLabel = await LabelService.getLabelById(
+        request.server.log,
+        request.server.knex,
+        request.params.id,
+      );
+
+      const flash = reply.flash() || {};
+      const isAuthenticated = Boolean(request.session.get('userId'));
+      logger.info({ labelId: foundLabel?.id }, 'Label retrieved successfully');
+
+      return reply.view('label/edit', { flash, label: foundLabel, LABEL_VALIDATION, isAuthenticated });
+    }
+    catch (error) {
+      logger.error({
+        error: error.message,
+        stack: error.stack,
+        errorType: error.constructor.name,
+        targetLabelId: request.params.id,
+        sessionUserId: request.session.get('userId'),
+        requestId: request.id,
+      }, 'Failed to load label data for editing');
+
+      request.flash('danger', t('label-edit.errors.general'));
+
+      return reply.redirect('/labels');
+    }
+  },
+
+  async delete(request, reply) {
+    const inputId = request.params.id.toString();
+
+    const logger = request.log.child({
+      component: 'LabelController',
+      method: 'delete',
+      inputId: inputId,
+    });
+    logger.info('Starting label deletion');
+
+    try {
+      const deletedCount = await LabelService.deleteLabel(
+        request.server.log,
+        request.server.knex,
+        inputId,
+      );
+
+      request.flash('success', t('label-delete.success'));
+      logger.info({ deletedCount: deletedCount }, 'Label deleted successfully');
+
+      return reply.redirect('/labels');
+    }
+    catch (error) {
+      logger.error({
+        error: error.message,
+        stack: error.stack,
+        errorType: error.constructor.name,
+        targetLabelId: inputId,
+        sessionUserId: request.session.get('userId'),
+        requestId: request.id,
+      }, 'Label deletion failed');
+
+      if (error instanceof InUseError) {
+        request.flash('warning', t('label-delete.errors.inUse'));
+      }
+      else {
+        request.flash('danger', t('label-delete.errors.general'));
+      }
+
+      return reply.redirect('/labels');
+    }
+  },
+
+  async update(request, reply) {
+    const inputId = request.params.id.toString();
+
+    const logger = request.log.child({
+      component: 'LabelController',
+      method: 'update',
+      inputId: inputId,
+    });
+    logger.info('Starting label update');
+
+    try {
+      const updatedLabel = await LabelService.updateLabel(
+        request.server.log,
+        request.server.knex,
+        inputId,
+        request.body.data,
+      );
+      request.flash('success', t('label-update.success'));
+      logger.info({ updatedLabelId: updatedLabel.id }, 'Label updated successfully');
+
+      return reply.redirect('/labels');
+    }
+    catch (error) {
+      logger.error({
+        error: error.message,
+        stack: error.stack,
+        errorType: error.constructor.name,
+        targetLabelId: inputId,
+        sessionUserId: request.session.get('userId'),
+        requestId: request.id,
+      }, 'Label update failed');
+
+      if (error instanceof NameExistsError) {
+        request.flash('warning', t('label-update.errors.nameExists'));
+
+        return reply.redirect(`/labels/${inputId}/edit`);
+      }
+      else {
+        request.flash('danger', t('label-update.errors.general'));
+      }
+
+      return reply.redirect('/labels');
+    }
+  },
+};

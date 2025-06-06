@@ -1,0 +1,24 @@
+extends ../layout/page.pug
+
+block head
+  title= __('status-edit.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= __('status-edit.title')
+    form(action=`/statuses/${status.id}`, method="post")
+      .form-floating.mb-3
+        input.form-control(
+          id="data_name"
+          name="data[name]"
+          type="text"
+          placeholder=__('status-edit.name')
+          value=status.name || ''
+          required
+          minlength=STATUS_VALIDATION.NAME.MIN
+          maxlength=STATUS_VALIDATION.NAME.MAX
+        )
+        label(for="data_name")= __('status-edit.name')
+
+      input(type="hidden", name="_method", value="patch")
+      input.btn.btn-primary(type="submit", value=__('status-edit.submit'))

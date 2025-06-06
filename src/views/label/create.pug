@@ -1,0 +1,23 @@
+extends ../layout/page.pug
+
+block head
+  title= __('label-create.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= __('label-create.title')
+    form(action="/labels", method="post")
+      .form-floating.mb-3
+        input.form-control(
+          id="data_name"
+          name="data[name]"
+          type="text"
+          placeholder=__('label-create.name')
+          value=form.name || ''
+          required
+          minlength=LABEL_VALIDATION.NAME.MIN
+          maxlength=LABEL_VALIDATION.NAME.MAX
+        )
+        label(for="data_name")= __('label-create.name')
+
+      input.btn.btn-primary(type="submit", value=__('label-create.submit'))

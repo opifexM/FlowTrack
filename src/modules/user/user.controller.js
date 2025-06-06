@@ -75,9 +75,9 @@ export const UserController = {
         stack: error.stack,
         errorType: error.constructor.name,
         email: request.body.data?.email,
-        requestId: request.id,
         userAgent: request.headers['user-agent'],
         ip: request.ip,
+        requestId: request.id,
       }, 'User registration failed');
       request.flash('formData', request.body.data);
 
@@ -131,10 +131,10 @@ export const UserController = {
         stack: error.stack,
         errorType: error.constructor.name,
         email: request.body.data?.email,
-        requestId: request.id,
         userAgent: request.headers['user-agent'],
         ip: request.ip,
         sessionId: request.session.sessionId,
+        requestId: request.id,
       }, 'User authentication failed');
       request.flash('formData', request.body.data);
 
@@ -194,7 +194,7 @@ export const UserController = {
 
       const flash = reply.flash() || {};
       const isAuthenticated = Boolean(request.session.get('userId'));
-      logger.info({ userId: foundUser.id }, 'User retrieved successfully');
+      logger.info({ userId: foundUser?.id }, 'User retrieved successfully');
 
       return reply.view('user/edit', { flash, user: foundUser, isAuthenticated });
     }
@@ -209,7 +209,7 @@ export const UserController = {
       }, 'Failed to load user data for editing');
 
       if (error instanceof ForbiddenError) {
-        request.flash('danger', t('user-edit.errors.forbidden'));
+        request.flash('warning', t('user-edit.errors.forbidden'));
       }
       else {
         request.flash('danger', t('user-edit.errors.general'));
@@ -260,7 +260,7 @@ export const UserController = {
       }, 'User deletion failed');
 
       if (error instanceof ForbiddenError) {
-        request.flash('danger', t('user-delete.errors.forbidden'));
+        request.flash('warning', t('user-delete.errors.forbidden'));
       }
       else {
         request.flash('danger', t('user-delete.errors.general'));
@@ -302,12 +302,16 @@ export const UserController = {
         errorType: error.constructor.name,
         targetUserId: inputId,
         currentUserId: userId,
-        updateFields: Object.keys(request.body || {}),
         requestId: request.id,
       }, 'User update failed');
 
+      if (error instanceof EmailExistsError) {
+        request.flash('warning', t('user-register.errors.emailExists'));
+
+        return reply.redirect(`/users/${inputId}/edit`);
+      }
       if (error instanceof ForbiddenError) {
-        request.flash('danger', t('user-update.errors.forbidden'));
+        request.flash('warning', t('user-update.errors.forbidden'));
       }
       else {
         request.flash('danger', t('user-update.errors.general'));

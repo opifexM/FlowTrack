@@ -1,0 +1,24 @@
+extends ../layout/page.pug
+
+block head
+  title= __('label-edit.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= __('label-edit.title')
+    form(action=`/labels/${label.id}`, method="post")
+      .form-floating.mb-3
+        input.form-control(
+          id="data_name"
+          name="data[name]"
+          type="text"
+          placeholder=__('label-edit.name')
+          value=label.name || ''
+          required
+          minlength=LABEL_VALIDATION.NAME.MIN
+          maxlength=LABEL_VALIDATION.NAME.MAX
+        )
+        label(for="data_name")= __('label-edit.name')
+
+      input(type="hidden", name="_method", value="patch")
+      input.btn.btn-primary(type="submit", value=__('label-edit.submit'))

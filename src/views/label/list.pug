@@ -1,0 +1,31 @@
+extends ../layout/page.pug
+
+block head
+  title= __('label-list.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= __('label-list.title')
+
+    a.btn.btn-primary(href="/labels/new")= __('label-list.create')
+
+    .table-responsive
+      table.table.table-borderless.table-striped.mt-5.bg-white
+        thead
+          tr
+            th ID
+            th= __('label-list.name')
+            th= __('label-list.created_at')
+            th= __('user-list.action')
+        tbody
+          each label in labels
+            tr
+              td= label.id
+              td= label.name
+              td= new Date(label.created_at).toLocaleString(__('local'))
+              td
+                .d-flex.flex-wrap
+                  a.btn.btn-primary.me-1(href=`/labels/${label.id}/edit`)= __('label-list.edit')
+                  form(action=`/labels/${label.id}`, method="post")
+                    input(type="hidden", name="_method", value="delete")
+                    input.btn.btn-danger(type="submit", value=__('label-list.delete'))
