@@ -1,6 +1,6 @@
 import * as crypto from 'node:crypto';
 import { EmailExistsError, ForbiddenError, InvalidCredentialsError } from './user.error.js';
-import { UserModel } from './user.model.js';
+import UserModel from './user.model.js';
 
 const ENCODING = 'hex';
 
@@ -29,39 +29,21 @@ export const UserService = {
 
   /**
    * @param {User|null} user
-   * @returns {Omit<User, 'password'>|null}
+   * @returns {SafeUser|null}
    */
   sanitizeUser(user) {
     if (user === null) {
       return null;
     }
-    const { password: _password, ...safe } = user;
-    return safe;
-  },
-
-  /**
-   * @param {import('pino').BaseLogger} log
-   * @param {import('knex').Knex} db
-   * @returns {Promise<User[]>}
-   */
-  async listUsers(log, db) {
-    const logger = log.child({
-      component: 'UserService',
-      method: 'listUsers',
-    });
-    logger.info('Listing all users');
-
-    const foundUsers = await UserModel.findAll(logger, db);
-    logger.info({ count: foundUsers.length }, 'Listed all users successfully');
-
-    return foundUsers.map(foundUser => this.sanitizeUser(foundUser));
+    const { password: _password, ...rest } = user;
+    return rest;
   },
 
   /**
    * @param {import('pino').BaseLogger} log
    * @param {import('knex').Knex} db
    * @param {string} id
-   * @returns {Promise<User|null>}
+   * @returns {Promise<SafeUser|null>}
    */
   async getUserById(log, db, id) {
     const logger = log.child({
@@ -71,10 +53,30 @@ export const UserService = {
     });
     logger.info('Starting to retrieve user by ID');
 
-    const foundUser = await UserModel.findById(logger, db, id);
+    /** @type {User|undefined} */
+    const foundUser = await UserModel.query(db).findById(id);
     logger.info({ userId: foundUser?.id }, 'User retrieved by ID successfully');
 
-    return this.sanitizeUser(foundUser);
+    return this.sanitizeUser(foundUser || null);
+  },
+
+  /**
+   * @param {import('pino').BaseLogger} log
+   * @param {import('knex').Knex} db
+   * @returns {Promise<SafeUser[]>}
+   */
+  async listUsers(log, db) {
+    const logger = log.child({
+      component: 'UserService',
+      method: 'listUsers',
+    });
+    logger.info('Listing all users');
+
+    /** @type {User[]} */
+    const foundUsers = await UserModel.query(db).select();
+    logger.info({ count: foundUsers.length }, 'Listed all users successfully');
+
+    return foundUsers.map(foundUser => this.sanitizeUser(foundUser));
   },
 
   /**
@@ -82,7 +84,7 @@ export const UserService = {
    * @param {import('knex').Knex} db
    * @param {string} inputId
    * @param {string} userId
-   * @returns {Promise<User|null>}
+   * @returns {Promise<SafeUser>}
    */
   async getAuthorizedUserById(log, db, inputId, userId) {
     const logger = log.child({
@@ -93,7 +95,8 @@ export const UserService = {
     });
     logger.info('Starting to retrieve user by ID with authorization check');
 
-    const foundUser = await UserModel.findById(logger, db, inputId);
+    /** @type {User|undefined} */
+    const foundUser = await UserModel.query(db).findById(inputId);
     if (!foundUser || foundUser.id.toString() !== userId.toString()) {
       logger.warn('Access denied: current user is not allowed to view this record');
       throw new ForbiddenError();
@@ -118,17 +121,18 @@ export const UserService = {
     });
     logger.info('Starting to retrieve user by Email');
 
-    const foundUser = await UserModel.findByEmail(logger, db, email);
+    /** @type {User|undefined} */
+    const foundUser = await UserModel.query(db).findOne({ email });
     logger.info('User retrieved by Email successfully');
 
-    return foundUser;
+    return foundUser || null;
   },
 
   /**
    * @param {import('pino').BaseLogger} log
    * @param {import('knex').Knex} db
    * @param {UserRegisterData} data
-   * @returns {Promise<User>}
+   * @returns {Promise<SafeUser>}
    */
   async createUser(log, db, data) {
     const logger = log.child({
@@ -145,7 +149,12 @@ export const UserService = {
     }
     const hashedPassword = this.createSHA(logger, data.password);
 
-    const createdUser = await UserModel.create(logger, db, { ...data, password: hashedPassword });
+    /** @type {User} */
+    const createdUser = await UserModel
+      .query(db)
+      .insert({ ...data, password: hashedPassword })
+      .returning('*');
+
     logger.info({ userId: createdUser.id }, 'User created successfully');
 
     return this.sanitizeUser(createdUser);
@@ -155,7 +164,7 @@ export const UserService = {
    * @param {import('pino').BaseLogger} log
    * @param {import('knex').Knex} db
    * @param {UserLoginData} data
-   * @returns {Promise<User>}
+   * @returns {Promise<SafeUser>}
    */
   async authUser(log, db, data) {
     const logger = log.child({
@@ -197,13 +206,15 @@ export const UserService = {
     });
     logger.info('Deleting user');
 
-    const foundUser = await UserModel.findById(logger, db, inputId);
+    /** @type {User|undefined} */
+    const foundUser = await UserModel.query(db).findById(inputId);
     if (!foundUser || foundUser.id.toString() !== userId.toString()) {
       logger.warn('Access denied: current user is not allowed to delete this user record');
       throw new ForbiddenError();
     }
 
-    const deletedCount = await UserModel.remove(logger, db, inputId);
+    /** @type {number} */
+    const deletedCount = await UserModel.query(db).deleteById(inputId);
     logger.info({ deletedCount: deletedCount }, 'User deleted successfully');
 
     return deletedCount;
@@ -215,7 +226,7 @@ export const UserService = {
    * @param {string} inputId
    * @param {string} userId
    * @param {Partial<UserRegisterData>} data
-   * @returns {Promise<User|null>}
+   * @returns {Promise<SafeUser|null>}
    */
   async updateUser(log, db, inputId, userId, data) {
     const logger = log.child({
@@ -226,7 +237,8 @@ export const UserService = {
     });
     logger.info('Updating user');
 
-    const foundUser = await UserModel.findById(logger, db, inputId);
+    /** @type {User|undefined} */
+    const foundUser = await UserModel.query(db).findById(inputId);
     if (!foundUser || foundUser.id.toString() !== userId.toString()) {
       logger.warn('Access denied: current user is not allowed to edit this user record');
       throw new ForbiddenError();
@@ -238,7 +250,8 @@ export const UserService = {
       throw new EmailExistsError(data.email);
     }
 
-    const updatedUser = await UserModel.update(logger, db, inputId, data);
+    /** @type {User} */
+    const updatedUser = await UserModel.query(db).patchAndFetchById(inputId, data);
     logger.info({ updatedUserId: updatedUser.id }, 'User updated successfully');
 
     return this.sanitizeUser(updatedUser);

@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { InUseError, NameExistsError } from './label.error.js';
+import { InUseError, NameExistsError, NotFoundError } from './label.error.js';
 import { LabelService } from './label.service.js';
 import { LABEL_VALIDATION } from './schemas/label-validation.js';
 
@@ -107,7 +107,7 @@ export const LabelController = {
 
       const flash = reply.flash() || {};
       const isAuthenticated = Boolean(request.session.get('userId'));
-      logger.info({ labelId: foundLabel?.id }, 'Label retrieved successfully');
+      logger.info({ labelId: foundLabel.id }, 'Label retrieved successfully');
 
       return reply.view('label/edit', { flash, label: foundLabel, LABEL_VALIDATION, isAuthenticated });
     }
@@ -121,7 +121,12 @@ export const LabelController = {
         requestId: request.id,
       }, 'Failed to load label data for editing');
 
-      request.flash('danger', t('label-edit.errors.general'));
+      if (error instanceof NotFoundError) {
+        request.flash('warning', t('label-edit.errors.notFound'));
+      }
+      else {
+        request.flash('danger', t('label-edit.errors.general'));
+      }
 
       return reply.redirect('/labels');
     }
@@ -161,6 +166,11 @@ export const LabelController = {
 
       if (error instanceof InUseError) {
         request.flash('warning', t('label-delete.errors.inUse'));
+      }
+      else if (error instanceof NotFoundError) {
+        request.flash('warning', t('label-delete.errors.notFound'));
+
+        return reply.redirect(`/labels`);
       }
       else {
         request.flash('danger', t('label-delete.errors.general'));
@@ -206,6 +216,11 @@ export const LabelController = {
         request.flash('warning', t('label-update.errors.nameExists'));
 
         return reply.redirect(`/labels/${inputId}/edit`);
+      }
+      else if (error instanceof NotFoundError) {
+        request.flash('warning', t('label-update.errors.notFound'));
+
+        return reply.redirect(`/labels`);
       }
       else {
         request.flash('danger', t('label-update.errors.general'));

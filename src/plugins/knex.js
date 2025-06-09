@@ -1,5 +1,6 @@
 import fp from 'fastify-plugin';
 import knex from 'knex';
+import { Model } from 'objection';
 import knexConfig from '../../knexfile.js';
 
 export default fp(
@@ -9,6 +10,7 @@ export default fp(
       : 'production';
 
     const db = knex(knexConfig[env]);
+    Model.knex(db);
 
     fastify.addHook('onClose', async (instance, done) => {
       await db.destroy();
@@ -16,6 +18,7 @@ export default fp(
     });
 
     fastify.decorate('knex', db);
+    fastify.decorate('Model', Model);
   },
   {
     name: 'knex',

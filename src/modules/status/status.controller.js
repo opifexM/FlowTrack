@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { InUseError, NameExistsError } from './status.error.js';
+import { InUseError, NameExistsError, NotFoundError } from './status.error.js';
 import { StatusService } from './status.service.js';
 import { STATUS_VALIDATION } from './schemas/status-validation.js';
 
@@ -107,7 +107,7 @@ export const StatusController = {
 
       const flash = reply.flash() || {};
       const isAuthenticated = Boolean(request.session.get('userId'));
-      logger.info({ statusId: foundStatus?.id }, 'Status retrieved successfully');
+      logger.info({ statusId: foundStatus.id }, 'Status retrieved successfully');
 
       return reply.view('status/edit', { flash, status: foundStatus, STATUS_VALIDATION, isAuthenticated });
     }
@@ -121,7 +121,12 @@ export const StatusController = {
         requestId: request.id,
       }, 'Failed to load status data for editing');
 
-      request.flash('danger', t('status-edit.errors.general'));
+      if (error instanceof NotFoundError) {
+        request.flash('warning', t('status-edit.errors.notFound'));
+      }
+      else {
+        request.flash('danger', t('status-edit.errors.general'));
+      }
 
       return reply.redirect('/statuses');
     }
@@ -161,6 +166,11 @@ export const StatusController = {
 
       if (error instanceof InUseError) {
         request.flash('warning', t('status-delete.errors.inUse'));
+      }
+      else if (error instanceof NotFoundError) {
+        request.flash('warning', t('status-delete.errors.notFound'));
+
+        return reply.redirect(`/statuses`);
       }
       else {
         request.flash('danger', t('status-delete.errors.general'));
@@ -206,6 +216,11 @@ export const StatusController = {
         request.flash('warning', t('status-update.errors.nameExists'));
 
         return reply.redirect(`/statuses/${inputId}/edit`);
+      }
+      else if (error instanceof NotFoundError) {
+        request.flash('warning', t('status-update.errors.notFound'));
+
+        return reply.redirect(`/statuses`);
       }
       else {
         request.flash('danger', t('status-update.errors.general'));

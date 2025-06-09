@@ -1,5 +1,5 @@
-import { NameExistsError, InUseError } from './status.error.js';
-import { StatusModel } from './status.model.js';
+import { NameExistsError, InUseError, NotFoundError } from './status.error.js';
+import StatusModel from './status.model.js';
 
 export const StatusService = {
   /**
@@ -14,7 +14,8 @@ export const StatusService = {
     });
     logger.info('Listing all statuses');
 
-    const foundStatuses = await StatusModel.findAll(logger, db);
+    /** @type {Status[]} */
+    const foundStatuses = await StatusModel.query(db).select();
     logger.info({ count: foundStatuses.length }, 'Listed all statuses successfully');
 
     return foundStatuses;
@@ -24,7 +25,7 @@ export const StatusService = {
    * @param {import('pino').BaseLogger} log
    * @param {import('knex').Knex} db
    * @param {string} id
-   * @returns {Promise<Status|null>}
+   * @returns {Promise<Status>}
    */
   async getStatusById(log, db, id) {
     const logger = log.child({
@@ -34,8 +35,13 @@ export const StatusService = {
     });
     logger.info('Starting to retrieve Status by ID');
 
-    const foundStatus = await StatusModel.findById(logger, db, id);
-    logger.info({ statusId: foundStatus?.id }, 'Status retrieved by ID successfully');
+    /** @type {Status|undefined} */
+    const foundStatus = await StatusModel.query(db).findById(id);
+    if (!foundStatus) {
+      logger.warn('Status not found');
+      throw new NotFoundError(id);
+    }
+    logger.info({ statusId: foundStatus.id }, 'Status retrieved by ID successfully');
 
     return foundStatus;
   },
@@ -53,10 +59,11 @@ export const StatusService = {
     });
     logger.info('Starting to retrieve Status by Name');
 
-    const foundStatus = await StatusModel.findByName(logger, db, name);
+    /** @type {Status|undefined} */
+    const foundStatus = await StatusModel.query(db).findOne({ name });
     logger.info('Status retrieved by Name successfully');
 
-    return foundStatus;
+    return foundStatus || null;
   },
 
   /**
@@ -78,7 +85,12 @@ export const StatusService = {
       throw new NameExistsError(data.name);
     }
 
-    const createdStatus = await StatusModel.create(logger, db, data);
+    /** @type {Status} */
+    const createdStatus = await StatusModel
+      .query(db)
+      .insert(data)
+      .returning('*');
+
     logger.info({ statusId: createdStatus.id }, 'Status created successfully');
 
     return createdStatus;
@@ -98,6 +110,13 @@ export const StatusService = {
     });
     logger.info('Deleting status');
 
+    /** @type {Status|undefined} */
+    const foundStatus = await StatusModel.query(db).findById(inputId);
+    if (!foundStatus) {
+      logger.warn('Status not found for delete');
+      throw new NotFoundError(inputId);
+    }
+
     // todo inuse
     // const foundStatus = await StatusModel.findById(logger, db, inputId);
     // if (!foundStatus || foundStatus.id.toString() !== userId.toString()) {
@@ -105,7 +124,8 @@ export const StatusService = {
     //   throw new InUseError();
     // }
 
-    const deletedCount = await StatusModel.remove(logger, db, inputId);
+    /** @type {number} */
+    const deletedCount = await StatusModel.query(db).deleteById(inputId);
     logger.info({ deletedCount: deletedCount }, 'Status deleted successfully');
 
     return deletedCount;
@@ -116,7 +136,7 @@ export const StatusService = {
    * @param {import('knex').Knex} db
    * @param {string} inputId
    * @param {Partial<StatusCreateData>} data
-   * @returns {Promise<Status|null>}
+   * @returns {Promise<Status>}
    */
   async updateStatus(log, db, inputId, data) {
     const logger = log.child({
@@ -126,13 +146,21 @@ export const StatusService = {
     });
     logger.info('Updating status');
 
+    /** @type {Status|undefined} */
+    const foundStatus = await StatusModel.query(db).findById(inputId);
+    if (!foundStatus) {
+      logger.warn('Status not found for update');
+      throw new NotFoundError(inputId);
+    }
+
     const existingStatus = await this.getStatusByName(logger, db, data.name);
     if (existingStatus && existingStatus.id.toString() !== inputId.toString()) {
       logger.warn('Status with this name already exists');
       throw new NameExistsError(data.name);
     }
 
-    const updatedStatus = await StatusModel.update(logger, db, inputId, data);
+    /** @type {Status} */
+    const updatedStatus = await StatusModel.query(db).patchAndFetchById(inputId, data);
     logger.info({ updatedStatusId: updatedStatus.id }, 'Status updated successfully');
 
     return updatedStatus;

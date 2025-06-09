@@ -14,3 +14,10 @@ export class InUseError extends Error {
     this.name = 'InUseError';
   }
 }
+
+export class NotFoundError extends Error {
+  constructor(id) {
+    super(`The label with ID '${id}' not found`);
+    this.name = 'NotFoundError';
+  }
+}

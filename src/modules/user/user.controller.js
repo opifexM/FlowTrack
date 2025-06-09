@@ -194,7 +194,7 @@ export const UserController = {
 
       const flash = reply.flash() || {};
       const isAuthenticated = Boolean(request.session.get('userId'));
-      logger.info({ userId: foundUser?.id }, 'User retrieved successfully');
+      logger.info({ userId: foundUser.id }, 'User retrieved successfully');
 
       return reply.view('user/edit', { flash, user: foundUser, isAuthenticated });
     }
@@ -310,7 +310,7 @@ export const UserController = {
 
         return reply.redirect(`/users/${inputId}/edit`);
       }
-      if (error instanceof ForbiddenError) {
+      else if (error instanceof ForbiddenError) {
         request.flash('warning', t('user-update.errors.forbidden'));
       }
       else {

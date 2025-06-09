@@ -1,5 +1,5 @@
-import { NameExistsError, InUseError } from './label.error.js';
-import { LabelModel } from './label.model.js';
+import { NameExistsError, InUseError, NotFoundError } from './label.error.js';
+import LabelModel from './label.model.js';
 
 export const LabelService = {
   /**
@@ -14,7 +14,8 @@ export const LabelService = {
     });
     logger.info('Listing all labels');
 
-    const foundLabels = await LabelModel.findAll(logger, db);
+    /** @type {Label[]} */
+    const foundLabels = await LabelModel.query(db).select();
     logger.info({ count: foundLabels.length }, 'Listed all labels successfully');
 
     return foundLabels;
@@ -24,7 +25,7 @@ export const LabelService = {
    * @param {import('pino').BaseLogger} log
    * @param {import('knex').Knex} db
    * @param {string} id
-   * @returns {Promise<Label|null>}
+   * @returns {Promise<Label>}
    */
   async getLabelById(log, db, id) {
     const logger = log.child({
@@ -34,8 +35,13 @@ export const LabelService = {
     });
     logger.info('Starting to retrieve Label by ID');
 
-    const foundLabel = await LabelModel.findById(logger, db, id);
-    logger.info({ labelId: foundLabel?.id }, 'Label retrieved by ID successfully');
+    /** @type {Label|undefined} */
+    const foundLabel = await LabelModel.query(db).findById(id);
+    if (!foundLabel) {
+      logger.warn('Label not found');
+      throw new NotFoundError(id);
+    }
+    logger.info({ labelId: foundLabel.id }, 'Label retrieved by ID successfully');
 
     return foundLabel;
   },
@@ -53,10 +59,11 @@ export const LabelService = {
     });
     logger.info('Starting to retrieve Label by Name');
 
-    const foundLabel = await LabelModel.findByName(logger, db, name);
+    /** @type {Label|undefined} */
+    const foundLabel = await LabelModel.query(db).findOne({ name });
     logger.info('Label retrieved by Name successfully');
 
-    return foundLabel;
+    return foundLabel || null;
   },
 
   /**
@@ -78,7 +85,12 @@ export const LabelService = {
       throw new NameExistsError(data.name);
     }
 
-    const createdLabel = await LabelModel.create(logger, db, data);
+    /** @type {Label} */
+    const createdLabel = await LabelModel
+      .query(db)
+      .insert(data)
+      .returning('*');
+
     logger.info({ labelId: createdLabel.id }, 'Label created successfully');
 
     return createdLabel;
@@ -98,6 +110,13 @@ export const LabelService = {
     });
     logger.info('Deleting label');
 
+    /** @type {Label|undefined} */
+    const foundLabel = await LabelModel.query(db).findById(inputId);
+    if (!foundLabel) {
+      logger.warn('Label not found for delete');
+      throw new NotFoundError(inputId);
+    }
+
     // todo inuse
     // const foundLabel = await LabelModel.findById(logger, db, inputId);
     // if (!foundLabel || foundLabel.id.toString() !== userId.toString()) {
@@ -105,7 +124,8 @@ export const LabelService = {
     //   throw new InUseError();
     // }
 
-    const deletedCount = await LabelModel.remove(logger, db, inputId);
+    /** @type {number} */
+    const deletedCount = await LabelModel.query(db).deleteById(inputId);
     logger.info({ deletedCount: deletedCount }, 'Label deleted successfully');
 
     return deletedCount;
@@ -116,7 +136,7 @@ export const LabelService = {
    * @param {import('knex').Knex} db
    * @param {string} inputId
    * @param {Partial<LabelCreateData>} data
-   * @returns {Promise<Label|null>}
+   * @returns {Promise<Label>}
    */
   async updateLabel(log, db, inputId, data) {
     const logger = log.child({
@@ -126,13 +146,21 @@ export const LabelService = {
     });
     logger.info('Updating label');
 
+    /** @type {Label|undefined} */
+    const foundLabel = await LabelModel.query(db).findById(inputId);
+    if (!foundLabel) {
+      logger.warn('Label not found for update');
+      throw new NotFoundError(inputId);
+    }
+
     const existingLabel = await this.getLabelByName(logger, db, data.name);
     if (existingLabel && existingLabel.id.toString() !== inputId.toString()) {
       logger.warn('Label with this name already exists');
       throw new NameExistsError(data.name);
     }
 
-    const updatedLabel = await LabelModel.update(logger, db, inputId, data);
+    /** @type {Label} */
+    const updatedLabel = await LabelModel.query(db).patchAndFetchById(inputId, data);
     logger.info({ updatedLabelId: updatedLabel.id }, 'Label updated successfully');
 
     return updatedLabel;
