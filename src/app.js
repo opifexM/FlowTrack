@@ -15,4 +15,6 @@ export default async function (fastify, opts) {
     dir: path.join(__dirname, 'routes'),
     options: opts,
   });
+
+  return fastify;
 }

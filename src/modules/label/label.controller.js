@@ -46,7 +46,7 @@ export const LabelController = {
     });
 
     logger.info('Displaying label creation form');
-    const { formData: [form = {}] = [], ...flash } = reply.flash();
+    const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
     const isAuthenticated = Boolean(request.session.get('userId'));
 
     return reply.view('label/create', { flash, form, LABEL_VALIDATION, isAuthenticated });

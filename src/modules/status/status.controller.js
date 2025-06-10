@@ -46,7 +46,7 @@ export const StatusController = {
     });
 
     logger.info('Displaying status creation form');
-    const { formData: [form = {}] = [], ...flash } = reply.flash();
+    const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
     const isAuthenticated = Boolean(request.session.get('userId'));
 
     return reply.view('status/create', { flash, form, STATUS_VALIDATION, isAuthenticated });

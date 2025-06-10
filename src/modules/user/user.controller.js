@@ -46,7 +46,7 @@ export const UserController = {
     });
 
     logger.info('Displaying user registration form');
-    const { formData: [form = {}] = [], ...flash } = reply.flash();
+    const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
     const isAuthenticated = Boolean(request.session.get('userId'));
 
     return reply.view('user/register', { flash, form, USER_VALIDATION, isAuthenticated });
@@ -101,7 +101,7 @@ export const UserController = {
     });
     logger.info('Displaying login form');
 
-    const { formData: [form = {}] = [], ...flash } = reply.flash();
+    const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
     const isAuthenticated = Boolean(request.session.get('userId'));
 
     return reply.view('user/login', { flash, form, isAuthenticated });
@@ -159,7 +159,8 @@ export const UserController = {
       userId: session.get('userId'),
     });
     logger.info('Starting session destruction');
-    await session.regenerate();
+    await session.set('userId', undefined);
+
     logger.info('Session destroyed successfully');
   },
 

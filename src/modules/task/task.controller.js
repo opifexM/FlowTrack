@@ -105,7 +105,7 @@ export const TaskController = {
         request.server.log,
         request.server.knex,
       );
-      const { formData: [form = {}] = [], ...flash } = reply.flash();
+      const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
       const isAuthenticated = Boolean(request.session.get('userId'));
 
       return reply.view('task/create', { flash, form, TASK_VALIDATION, isAuthenticated, statuses, users, labels });

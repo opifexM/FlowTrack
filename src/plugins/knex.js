@@ -19,6 +19,10 @@ export default fp(
 
     fastify.decorate('knex', db);
     fastify.decorate('Model', Model);
+    fastify.decorate('objection', {
+      knex: db,
+      Model,
+    });
   },
   {
     name: 'knex',
