@@ -1,5 +1,5 @@
-import {statusCreateSchema} from "../modules/status/schemas/status-create.schema.js";
-import {StatusController} from "../modules/status/status.controller.js";
+import { statusCreateSchema } from '../modules/status/schemas/status-create.schema.js';
+import { StatusController } from '../modules/status/status.controller.js';
 
 export default async function (fastify) {
   fastify.get('/statuses', { preHandler: fastify.authenticate }, async (request, reply) => {

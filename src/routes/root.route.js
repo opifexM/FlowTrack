@@ -1,4 +1,4 @@
-import {RootController} from '../modules/root.controller.js';
+import { RootController } from '../modules/root.controller.js';
 
 export default async function (fastify, opts) {
   fastify.get('/', async (request, reply) => {

@@ -1,4 +1,4 @@
-import { NameExistsError, InUseError, NotFoundError } from './label.error.js';
+import { InUseError, NameExistsError, NotFoundError } from './label.error.js';
 import LabelModel from './label.model.js';
 
 export const LabelService = {
@@ -79,7 +79,8 @@ export const LabelService = {
     });
     logger.info('Creating new label');
 
-    const existingLabel = await this.getLabelByName(logger, db, data.name);
+    /** @type {Label|null} */
+    const existingLabel = await LabelService.getLabelByName(logger, db, data.name);
     if (existingLabel) {
       logger.warn('Label with this name already exists');
       throw new NameExistsError(data.name);
@@ -117,12 +118,14 @@ export const LabelService = {
       throw new NotFoundError(inputId);
     }
 
-    // todo inuse
-    // const foundLabel = await LabelModel.findById(logger, db, inputId);
-    // if (!foundLabel || foundLabel.id.toString() !== userId.toString()) {
-    //   logger.warn('Couldn't delete the label it's in use');
-    //   throw new InUseError();
-    // }
+    const inUseCount = await LabelModel
+      .relatedQuery('tasks', db)
+      .for(inputId)
+      .resultSize();
+    if (inUseCount > 0) {
+      logger.warn({ inUseCount }, 'Cannot delete label: still referenced in tasks');
+      throw new InUseError(`Label ${inputId} is still used in ${inUseCount} task(s)`);
+    }
 
     /** @type {number} */
     const deletedCount = await LabelModel.query(db).deleteById(inputId);
@@ -153,6 +156,7 @@ export const LabelService = {
       throw new NotFoundError(inputId);
     }
 
+    /** @type {Label|null} */
     const existingLabel = await this.getLabelByName(logger, db, data.name);
     if (existingLabel && existingLabel.id.toString() !== inputId.toString()) {
       logger.warn('Label with this name already exists');
@@ -160,7 +164,6 @@ export const LabelService = {
     }
 
     /** @type {Label} */
-    const updatedLabel = await LabelModel.query(db).patchAndFetchById(inputId, data);
     logger.info({ updatedLabelId: updatedLabel.id }, 'Label updated successfully');
 
     return updatedLabel;

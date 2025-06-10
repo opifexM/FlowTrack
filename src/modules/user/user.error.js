@@ -21,3 +21,10 @@ export class ForbiddenError extends Error {
     this.name = 'ForbiddenError';
   }
 }
+
+export class InUseError extends Error {
+  constructor() {
+    super('User in use');
+    this.name = 'InUseError';
+  }
+}

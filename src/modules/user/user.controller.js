@@ -14,6 +14,7 @@ export const UserController = {
     logger.info('Displaying user list page');
 
     try {
+      /** @type {SafeUser[]} */
       const userList = await UserService.listUsers(
         request.server.log,
         request.server.knex,
@@ -59,6 +60,7 @@ export const UserController = {
     logger.info('Starting user registration');
 
     try {
+      /** @type {SafeUser} */
       const createdUser = await UserService.createUser(
         request.server.log,
         request.server.knex,
@@ -113,6 +115,7 @@ export const UserController = {
     logger.info('Starting user authentication');
 
     try {
+      /** @type {SafeUser} */
       const authenticatedUser = await UserService.authUser(
         request.server.log,
         request.server.knex,
@@ -176,19 +179,21 @@ export const UserController = {
   },
 
   async showEditForm(request, reply) {
+    const inputId = request.params.id.toString();
     const logger = request.log.child({
       component: 'UserController',
       method: 'showEditForm',
-      inputId: request.params.id,
+      inputId: inputId,
       userId: request.session.get('userId'),
     });
     logger.info('Displaying user edit form');
 
     try {
+      /** @type {SafeUser} */
       const foundUser = await UserService.getAuthorizedUserById(
         request.server.log,
         request.server.knex,
-        request.params.id,
+        inputId,
         request.session.get('userId'),
       );
 
@@ -203,7 +208,7 @@ export const UserController = {
         error: error.message,
         stack: error.stack,
         errorType: error.constructor.name,
-        targetUserId: request.params.id,
+        targetUserId: inputId,
         currentUserId: request.session.get('userId'),
         requestId: request.id,
       }, 'Failed to load user data for editing');
@@ -222,7 +227,6 @@ export const UserController = {
   async delete(request, reply) {
     const inputId = request.params.id.toString();
     const userId = request.session.get('userId').toString();
-
     const logger = request.log.child({
       component: 'UserController',
       method: 'delete',
@@ -273,7 +277,6 @@ export const UserController = {
   async update(request, reply) {
     const inputId = request.params.id.toString();
     const userId = request.session.get('userId').toString();
-
     const logger = request.log.child({
       component: 'UserController',
       method: 'update',
@@ -283,6 +286,7 @@ export const UserController = {
     logger.info('Starting user update');
 
     try {
+      /** @type {SafeUser} */
       const updatedUser = await UserService.updateUser(
         request.server.log,
         request.server.knex,

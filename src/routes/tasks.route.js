@@ -1,0 +1,66 @@
+import { taskCreateSchema } from '../modules/task/schemas/task-create.schema.js';
+import { taskFilterSchema } from '../modules/task/schemas/task-filter-query.schema.js';
+import { TaskController } from '../modules/task/task.controller.js';
+
+export default async function (fastify) {
+  fastify.get('/tasks', { preHandler: fastify.authenticate, schema: taskFilterSchema }, async (request, reply) => {
+    request.log.info('GET /tasks');
+    return TaskController.showTaskList(request, reply);
+  });
+
+  fastify.get('/tasks/new', async (request, reply) => {
+    request.log.info('GET /tasks/new');
+    return TaskController.showCreateForm(request, reply);
+  });
+
+  fastify.get('/tasks/:id/edit', { preHandler: fastify.authenticate }, async (request, reply) => {
+    request.log.info('GET /tasks/:id/edit');
+    return TaskController.showEditForm(request, reply);
+  });
+
+  fastify.get('/tasks/:id', { preHandler: fastify.authenticate }, async (request, reply) => {
+    request.log.info('GET /tasks/:id');
+    return TaskController.showTask(request, reply);
+  });
+
+  fastify.post('/tasks', { preHandler: fastify.authenticate, schema: taskCreateSchema }, async (request, reply) => {
+    request.log.info('POST /tasks');
+    return TaskController.create(request, reply);
+  });
+
+  fastify.route({
+    method: 'POST',
+    url: '/tasks/:id',
+    preValidation: async (request, reply) => {
+      request.log.info({ body: request.body?._method }, 'PREVALIDATION POST /tasks/:id');
+      if (request.body && request.body._method === 'patch') {
+        request.log.info('PATCH /tasks/:id (OVERRIDE)');
+        await fastify.authenticate(request, reply);
+
+        return TaskController.update(request, reply);
+      }
+      if (request.body && request.body._method === 'delete') {
+        request.log.info('DELETE /tasks/:id (OVERRIDE)');
+        await fastify.authenticate(request, reply);
+
+        return TaskController.delete(request, reply);
+      }
+    },
+    preHandler: fastify.authenticate,
+    schema: taskCreateSchema,
+    handler: async (request, reply) => {
+      request.log.info('POST /tasks/:id (NO_OVERRIDE)');
+      reply.code(400).send({ error: 'Method not supported' });
+    },
+  });
+
+  fastify.patch('/tasks/:id', { preHandler: fastify.authenticate, schema: taskCreateSchema }, async (request, reply) => {
+    request.log.info('PATCH /tasks/:id');
+    return TaskController.update(request, reply);
+  });
+
+  fastify.delete('/tasks/:id', { preHandler: fastify.authenticate }, async (request, reply) => {
+    request.log.info('DELETE /tasks/:id');
+    return TaskController.delete(request, reply);
+  });
+}

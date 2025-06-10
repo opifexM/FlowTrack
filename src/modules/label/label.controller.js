@@ -14,6 +14,7 @@ export const LabelController = {
     logger.info('Displaying label list page');
 
     try {
+      /** @type {Label[]} */
       const labelList = await LabelService.listLabels(
         request.server.log,
         request.server.knex,
@@ -59,6 +60,7 @@ export const LabelController = {
     logger.info('Starting label creation');
 
     try {
+      /** @type {Label} */
       const createdLabel = await LabelService.createLabel(
         request.server.log,
         request.server.knex,
@@ -91,18 +93,20 @@ export const LabelController = {
   },
 
   async showEditForm(request, reply) {
+    const inputId = request.params.id.toString();
     const logger = request.log.child({
       component: 'LabelController',
       method: 'showEditForm',
-      inputId: request.params.id,
+      inputId: inputId,
     });
     logger.info('Displaying label edit form');
 
     try {
+      /** @type {Label} */
       const foundLabel = await LabelService.getLabelById(
         request.server.log,
         request.server.knex,
-        request.params.id,
+        inputId,
       );
 
       const flash = reply.flash() || {};
@@ -116,7 +120,7 @@ export const LabelController = {
         error: error.message,
         stack: error.stack,
         errorType: error.constructor.name,
-        targetLabelId: request.params.id,
+        targetLabelId: inputId,
         sessionUserId: request.session.get('userId'),
         requestId: request.id,
       }, 'Failed to load label data for editing');
@@ -134,7 +138,6 @@ export const LabelController = {
 
   async delete(request, reply) {
     const inputId = request.params.id.toString();
-
     const logger = request.log.child({
       component: 'LabelController',
       method: 'delete',
@@ -182,7 +185,6 @@ export const LabelController = {
 
   async update(request, reply) {
     const inputId = request.params.id.toString();
-
     const logger = request.log.child({
       component: 'LabelController',
       method: 'update',
@@ -191,6 +193,7 @@ export const LabelController = {
     logger.info('Starting label update');
 
     try {
+      /** @type {Label} */
       const updatedLabel = await LabelService.updateLabel(
         request.server.log,
         request.server.knex,

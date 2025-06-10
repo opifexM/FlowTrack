@@ -1,0 +1,39 @@
+extends ../layout/page.pug
+
+block head
+  title= __('task-list.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= __('task-list.title')
+
+    a.btn.btn-primary.mb-5(href="/tasks/new")= __('task-list.create')
+
+    include filters
+
+    .table-responsive
+      table.table.table-borderless.table-striped.mt-5.bg-white
+        thead
+          tr
+            th ID
+            th= __('task-list.name')
+            th= __('task-list.status')
+            th= __('task-list.author')
+            th= __('task-list.executor')
+            th= __('task-list.created_at')
+        tbody
+          each task in tasks
+            tr
+              td= task.id
+              td
+                a(href=`/tasks/${task.id}`)= task.name
+              td= task.status ? task.status.name : ''
+              td= task.creator ? `${task.creator.firstName} ${task.creator.lastName}` : ''
+              td= task.executor ? `${task.executor.firstName} ${task.executor.lastName}` : ''
+              td= new Date(task.created_at).toLocaleString(__('local'))
+              td
+                .d-flex.flex-wrap
+                  a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= __('task-list.edit')
+                  form(action=`/tasks/${task.id}`, method="post")
+                    input(type="hidden", name="_method", value="delete")
+                    input.btn.btn-danger(type="submit", value=__('task-list.delete'))

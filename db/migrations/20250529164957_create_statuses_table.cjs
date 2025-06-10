@@ -3,11 +3,12 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  return knex.schema.createTable('statuses', table => {
+  return knex.schema.createTable('statuses', (table) => {
     table.increments('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
     table.string('name').notNullable();
+
     table.timestamps(true, true);
-  })
+  });
 };
 
 /**
@@ -17,4 +18,3 @@ exports.up = function (knex) {
 exports.down = function (knex) {
   return knex.schema.dropTableIfExists('statuses');
 };
-

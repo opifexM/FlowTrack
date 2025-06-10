@@ -2,7 +2,7 @@ import { Model } from 'objection';
 
 /**
  * @typedef {Object} Label
- * @property {number} id
+ * @property {string} id
  * @property {string} name
  * @property {Date}   created_at
  * @property {Date}   updated_at

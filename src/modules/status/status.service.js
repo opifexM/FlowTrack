@@ -1,4 +1,5 @@
-import { NameExistsError, InUseError, NotFoundError } from './status.error.js';
+import TaskModel from '../task/task.model.js';
+import { InUseError, NameExistsError, NotFoundError } from './status.error.js';
 import StatusModel from './status.model.js';
 
 export const StatusService = {
@@ -79,6 +80,7 @@ export const StatusService = {
     });
     logger.info('Creating new status');
 
+    /** @type {Status|undefined} */
     const existingStatus = await this.getStatusByName(logger, db, data.name);
     if (existingStatus) {
       logger.warn('Status with this name already exists');
@@ -117,12 +119,13 @@ export const StatusService = {
       throw new NotFoundError(inputId);
     }
 
-    // todo inuse
-    // const foundStatus = await StatusModel.findById(logger, db, inputId);
-    // if (!foundStatus || foundStatus.id.toString() !== userId.toString()) {
-    //   logger.warn('Couldn't delete the status it's in use');
-    //   throw new InUseError();
-    // }
+    const inUseCount = await TaskModel.query(db)
+      .where('statusId', inputId)
+      .resultSize();
+    if (inUseCount > 0) {
+      logger.warn({ inUseCount }, 'Cannot delete status: still referenced in tasks');
+      throw new InUseError();
+    }
 
     /** @type {number} */
     const deletedCount = await StatusModel.query(db).deleteById(inputId);
@@ -153,6 +156,7 @@ export const StatusService = {
       throw new NotFoundError(inputId);
     }
 
+    /** @type {Status|undefined} */
     const existingStatus = await this.getStatusByName(logger, db, data.name);
     if (existingStatus && existingStatus.id.toString() !== inputId.toString()) {
       logger.warn('Status with this name already exists');

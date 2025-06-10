@@ -15,7 +15,7 @@ export default fp(
       'COOKIE_SECRET',
       'SECURE_SESSION_SECRET',
       'PASSWORD_ALGORITHM',
-      'PASSWORD_SALT_SECRET'
+      'PASSWORD_SALT_SECRET',
     ];
 
     const missingVars = requiredEnvVars.filter(envVar => !process.env[envVar]);

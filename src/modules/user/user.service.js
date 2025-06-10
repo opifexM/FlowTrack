@@ -1,5 +1,6 @@
 import * as crypto from 'node:crypto';
-import { EmailExistsError, ForbiddenError, InvalidCredentialsError } from './user.error.js';
+import TaskModel from '../task/task.model.js';
+import { EmailExistsError, ForbiddenError, InUseError, InvalidCredentialsError } from './user.error.js';
 import UserModel from './user.model.js';
 
 const ENCODING = 'hex';
@@ -142,6 +143,7 @@ export const UserService = {
     });
     logger.info('Creating new user');
 
+    /** @type {User|undefined} */
     const existingUser = await this.getUserByEmail(logger, db, data.email);
     if (existingUser) {
       logger.warn('Email already in use');
@@ -174,6 +176,7 @@ export const UserService = {
     });
     logger.info('Authenticating user');
 
+    /** @type {User|undefined} */
     const existingUser = await this.getUserByEmail(logger, db, data.email);
     if (!existingUser) {
       logger.warn('User with given email not found');
@@ -213,6 +216,15 @@ export const UserService = {
       throw new ForbiddenError();
     }
 
+    const inUseCount = await TaskModel.query(db)
+      .where('creatorId', inputId)
+      .orWhere('executorId', inputId)
+      .resultSize();
+    if (inUseCount > 0) {
+      logger.warn({ inUseCount }, 'Cannot delete user: still referenced in tasks');
+      throw new InUseError();
+    }
+
     /** @type {number} */
     const deletedCount = await UserModel.query(db).deleteById(inputId);
     logger.info({ deletedCount: deletedCount }, 'User deleted successfully');
@@ -244,6 +256,7 @@ export const UserService = {
       throw new ForbiddenError();
     }
 
+    /** @type {User|undefined} */
     const existingUser = await this.getUserByEmail(logger, db, data.email);
     if (existingUser && existingUser.id.toString() !== inputId.toString()) {
       logger.warn('Email already in use');

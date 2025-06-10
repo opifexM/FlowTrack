@@ -1,7 +1,7 @@
 import i18next from 'i18next';
+import { STATUS_VALIDATION } from './schemas/status-validation.js';
 import { InUseError, NameExistsError, NotFoundError } from './status.error.js';
 import { StatusService } from './status.service.js';
-import { STATUS_VALIDATION } from './schemas/status-validation.js';
 
 const { t } = i18next;
 
@@ -14,6 +14,7 @@ export const StatusController = {
     logger.info('Displaying status list page');
 
     try {
+      /** @type {Status[]} */
       const statusList = await StatusService.listStatuses(
         request.server.log,
         request.server.knex,
@@ -59,6 +60,7 @@ export const StatusController = {
     logger.info('Starting status creation');
 
     try {
+      /** @type {Status} */
       const createdStatus = await StatusService.createStatus(
         request.server.log,
         request.server.knex,
@@ -91,18 +93,20 @@ export const StatusController = {
   },
 
   async showEditForm(request, reply) {
+    const inputId = request.params.id.toString();
     const logger = request.log.child({
       component: 'StatusController',
       method: 'showEditForm',
-      inputId: request.params.id,
+      inputId: inputId,
     });
     logger.info('Displaying status edit form');
 
     try {
+      /** @type {Status} */
       const foundStatus = await StatusService.getStatusById(
         request.server.log,
         request.server.knex,
-        request.params.id,
+        inputId,
       );
 
       const flash = reply.flash() || {};
@@ -116,7 +120,7 @@ export const StatusController = {
         error: error.message,
         stack: error.stack,
         errorType: error.constructor.name,
-        targetStatusId: request.params.id,
+        targetStatusId: inputId,
         sessionUserId: request.session.get('userId'),
         requestId: request.id,
       }, 'Failed to load status data for editing');
@@ -182,7 +186,6 @@ export const StatusController = {
 
   async update(request, reply) {
     const inputId = request.params.id.toString();
-
     const logger = request.log.child({
       component: 'StatusController',
       method: 'update',
@@ -191,6 +194,7 @@ export const StatusController = {
     logger.info('Starting status update');
 
     try {
+      /** @type {Status} */
       const updatedStatus = await StatusService.updateStatus(
         request.server.log,
         request.server.knex,

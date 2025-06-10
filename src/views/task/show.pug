@@ -1,0 +1,39 @@
+extends ../layout/page.pug
+
+block head
+  title= __('task-show.title')
+
+block content
+  .container.wrapper.flex-grow-1
+    h1.display-4.fw-bold.mt-4= task.name
+
+    .row.mt-5.p-5.shadow.bg-white
+      .col-12.col-md-8.order-2.order-md-1
+        .lead.fw-normal.mb-4= task.description
+
+      .col-12.col-md-4.border-start.px-3.order-1.order-md-2.mb-3.mb-md-0
+        if task.labels && task.labels.length
+          .mb-2
+            - const colors = ['bg-info', 'bg-warning', 'bg-success', 'bg-light', 'bg-secondary', 'bg-dark']
+            each label, index in task.labels
+              - const colorClass = colors[index % colors.length]
+              - const textClass = ['bg-warning', 'bg-light'].includes(colorClass) ? 'text-dark' : 'text-white'
+              span.me-1.badge(class=`${colorClass} ${textClass}`)= label.name
+
+        .d-flex.flex-wrap.mb-3
+          span.text-muted.me-2= __('task-show.author')
+          span= task.creator ? `${task.creator.firstName} ${task.creator.lastName}` : ''
+
+        .d-flex.flex-wrap.mb-3
+          span.text-muted.me-2= __('task-show.executor')
+          span= task.executor ? `${task.executor.firstName} ${task.executor.lastName}` : ''
+
+        .d-flex.flex-wrap.mb-3
+          span.text-muted.me-2= __('task-show.created_at')
+          span= new Date(task.created_at).toLocaleString(__('local'))
+
+        .d-flex.flex-wrap
+          a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= __('task-show.edit')
+          form(action=`/tasks/${task.id}`, method="post")
+            input(type="hidden", name="_method", value="delete")
+            input.btn.btn-danger(type="submit", value=__('task-show.delete'))

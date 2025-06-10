@@ -1,5 +1,5 @@
-import fp from 'fastify-plugin';
 import secureSession from '@fastify/secure-session';
+import fp from 'fastify-plugin';
 
 export default fp(async (fastify, opts) => {
   await fastify.register(secureSession, {

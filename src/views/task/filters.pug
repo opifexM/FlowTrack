@@ -1,0 +1,41 @@
+
+.card.shadow-sm
+  .card-body.p-4
+    form(action="/tasks", method="get", autocomplete="off")
+      .row
+        .col-12.col-md
+          .input-group.mb-3
+            label.input-group-text(for="data_status")= __('task-list.filters.status')
+            select.form-select(id="data_status", name="status")
+              option
+              each status in statuses
+                - console.log(`Status: ${status.name} (ID: ${status.id}), Selected: ${filters.status === status.id}`)
+                - console.log(`Type of status.id: ${typeof status.id}, Type of filters.status: ${typeof filters.status}`)
+                option(value=status.id, selected=filters.status === status.id.toString())= status.name
+
+        .col-12.col-md
+          .input-group.mb-3
+            label.input-group-text(for="data_executor")= __('task-list.filters.executor')
+            select.form-select(id="data_executor", name="executor")
+              option
+              each user in users
+                option(value=user.id, selected=filters.executor === user.id.toString())= `${user.firstName} ${user.lastName}`
+
+        .col-12.col-md
+          .input-group.mb-3
+            label.input-group-text(for="data_label")= __('task-list.filters.label')
+            select.form-select(id="data_label", name="label")
+              option
+              each label in labels
+                option(value=label.id, selected=filters.label === label.id.toString())= label.name
+
+      .mb-3.form-check
+        input.form-check-input(
+          id="data_isCreatorUser"
+          type="checkbox"
+          name="isCreatorUser"
+          checked=filters.isCreatorUser
+        )
+        label.form-check-label(for="data_isCreatorUser")= __('task-list.filters.onlyMyTasks')
+
+      input.btn.btn-primary(type="submit", value=__('task-list.filters.submit'))
