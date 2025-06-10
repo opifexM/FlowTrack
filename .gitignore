@@ -23,3 +23,4 @@ yarn-error.log*
 *.sublime*
 .vscode
 /db/sqlite.db
+/test-data/
