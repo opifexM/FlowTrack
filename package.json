@@ -7,7 +7,8 @@
     "start": "npm run db:migrate && fastify start -l info index.js",
     "dev": "npm run db:migrate && fastify start -w --ignore-watch='db/**' -l debug -P index.js",
     "db:migrate": "knex migrate:latest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "echo \"Nothing to build\""
   },
   "keywords": [],
   "license": "ISC",
