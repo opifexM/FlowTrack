@@ -8,7 +8,7 @@ export default async function (fastify) {
     return TaskController.showTaskList(request, reply);
   });
 
-  fastify.get('/tasks/new', async (request, reply) => {
+  fastify.get('/tasks/new', { preHandler: fastify.authenticate }, async (request, reply) => {
     request.log.info('GET /tasks/new');
     return TaskController.showCreateForm(request, reply);
   });

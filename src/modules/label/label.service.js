@@ -164,6 +164,7 @@ export const LabelService = {
     }
 
     /** @type {Label} */
+    const updatedLabel = await LabelModel.query(db).patchAndFetchById(inputId, data);
     logger.info({ updatedLabelId: updatedLabel.id }, 'Label updated successfully');
 
     return updatedLabel;

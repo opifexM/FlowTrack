@@ -1,3 +1,4 @@
-import app from './src/app.js';
+import './patch-fastify-version.js';
+import buildApp from './src/app.js';
 
-export default app;
+export default buildApp;
