@@ -8,11 +8,11 @@ const __dirname = path.dirname(__filename);
 export default async function (fastify, opts) {
   await fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
-    options: { ...opts },
+    options: opts,
   });
 
   await fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
-    options: { ...opts },
+    options: opts,
   });
 }
