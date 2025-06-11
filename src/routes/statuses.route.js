@@ -1,5 +1,7 @@
+import i18next from 'i18next';
 import { statusCreateSchema } from '../modules/status/schemas/status-create.schema.js';
 import { StatusController } from '../modules/status/status.controller.js';
+const { t } = i18next;
 
 export default async function (fastify) {
   fastify.get('/statuses', { preHandler: fastify.authenticate }, async (request, reply) => {
@@ -20,7 +22,12 @@ export default async function (fastify) {
   fastify.post('/statuses', {
     preHandler: fastify.authenticate,
     schema: statusCreateSchema,
-    errorHandler: async (error, request, reply) => StatusController.showCreateForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('status-create.errors.general'));
+      }
+      return StatusController.showCreateForm(request, reply);
+    },
   }, async (request, reply) => {
     request.log.info('POST /statuses');
     return StatusController.create(request, reply);
@@ -49,7 +56,12 @@ export default async function (fastify) {
     },
     preHandler: fastify.authenticate,
     schema: statusCreateSchema,
-    errorHandler: async (error, request, reply) => StatusController.showEditForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('status-edit.errors.general'));
+      }
+      return StatusController.showEditForm(request, reply);
+    },
     handler: async (request, reply) => {
       request.log.info('POST /statuses/:id (NO_OVERRIDE)');
       reply.code(400).send({ error: 'Method not supported' });
@@ -59,7 +71,12 @@ export default async function (fastify) {
   fastify.patch('/statuses/:id', {
     preHandler: fastify.authenticate,
     schema: statusCreateSchema,
-    errorHandler: async (error, request, reply) => StatusController.showEditForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('status-edit.errors.general'));
+      }
+      return StatusController.showEditForm(request, reply);
+    },
   }, async (request, reply) => {
     request.log.info('PATCH /statuses/:id');
     return StatusController.update(request, reply);

@@ -1,5 +1,7 @@
+import i18next from 'i18next';
 import { userRegisterSchema } from '../modules/user/schemas/user-register.schema.js';
 import { UserController } from '../modules/user/user.controller.js';
+const { t } = i18next;
 
 export default async function (fastify) {
   fastify.get('/users', async (request, reply) => {
@@ -19,7 +21,12 @@ export default async function (fastify) {
 
   fastify.post('/users', {
     schema: userRegisterSchema,
-    errorHandler: async (error, request, reply) => UserController.showRegisterForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('user-register.errors.general'));
+      }
+      return UserController.showRegisterForm(request, reply);
+    },
   }, async (request, reply) => {
     request.log.info('POST /users');
     return UserController.register(request, reply);
@@ -48,7 +55,12 @@ export default async function (fastify) {
     },
     preHandler: fastify.authenticate,
     schema: userRegisterSchema,
-    errorHandler: async (error, request, reply) => UserController.showRegisterForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('user-edit.errors.general'));
+      }
+      return UserController.showRegisterForm(request, reply);
+    },
     handler: async (request, reply) => {
       request.log.info('POST /users/:id (NO_OVERRIDE)');
       reply.code(400).send({ error: 'Method not supported' });
@@ -58,7 +70,12 @@ export default async function (fastify) {
   fastify.patch('/users/:id', {
     preHandler: fastify.authenticate,
     schema: userRegisterSchema,
-    errorHandler: async (error, request, reply) => UserController.showRegisterForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('user-edit.errors.general'));
+      }
+      return UserController.showRegisterForm(request, reply);
+    },
   }, async (request, reply) => {
     request.log.info('PATCH /users/:id');
     return UserController.update(request, reply);

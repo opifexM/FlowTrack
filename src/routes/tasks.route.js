@@ -1,6 +1,8 @@
+import i18next from 'i18next';
 import { taskCreateSchema } from '../modules/task/schemas/task-create.schema.js';
 import { taskFilterSchema } from '../modules/task/schemas/task-filter-query.schema.js';
 import { TaskController } from '../modules/task/task.controller.js';
+const { t } = i18next;
 
 export default async function (fastify) {
   fastify.get('/tasks', { preHandler: fastify.authenticate, schema: taskFilterSchema }, async (request, reply) => {
@@ -26,7 +28,12 @@ export default async function (fastify) {
   fastify.post('/tasks', {
     preHandler: fastify.authenticate,
     schema: taskCreateSchema,
-    errorHandler: async (error, request, reply) => TaskController.showCreateForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('task-create.errors.general'));
+      }
+      return TaskController.showCreateForm(request, reply);
+    },
   }, async (request, reply) => {
     request.log.info('POST /tasks');
     return TaskController.create(request, reply);
@@ -52,7 +59,12 @@ export default async function (fastify) {
     },
     preHandler: fastify.authenticate,
     schema: taskCreateSchema,
-    errorHandler: async (error, request, reply) => TaskController.showEditForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('task-edit.errors.general'));
+      }
+      return TaskController.showEditForm(request, reply);
+    },
     handler: async (request, reply) => {
       request.log.info('POST /tasks/:id (NO_OVERRIDE)');
       reply.code(400).send({ error: 'Method not supported' });
@@ -62,7 +74,12 @@ export default async function (fastify) {
   fastify.patch('/tasks/:id', {
     preHandler: fastify.authenticate,
     schema: taskCreateSchema,
-    errorHandler: async (error, request, reply) => TaskController.showEditForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('task-edit.errors.general'));
+      }
+      return TaskController.showEditForm(request, reply);
+    },
   }, async (request, reply) => {
     request.log.info('PATCH /tasks/:id');
     return TaskController.update(request, reply);

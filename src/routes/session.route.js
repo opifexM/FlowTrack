@@ -1,5 +1,7 @@
+import i18next from 'i18next';
 import { userLoginSchema } from '../modules/user/schemas/user-login.schema.js';
 import { UserController } from '../modules/user/user.controller.js';
+const { t } = i18next;
 
 export default async function (fastify) {
   fastify.get('/session/new', async (request, reply) => {
@@ -24,7 +26,12 @@ export default async function (fastify) {
       }
     },
     schema: userLoginSchema,
-    errorHandler: async (error, request, reply) => UserController.showLoginForm(request, reply),
+    errorHandler: async (error, request, reply) => {
+      if (error.name === 'ValidationError') {
+        request.flash('danger', t('user-login.errors.general'));
+      }
+      return UserController.showLoginForm(request, reply);
+    },
     handler: async (request, reply) => {
       request.log.info('POST /session (NO_OVERRIDE)');
 
