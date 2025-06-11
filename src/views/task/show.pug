@@ -12,9 +12,11 @@ block content
         .lead.fw-normal.mb-4= task.description
 
       .col-12.col-md-4.border-start.px-3.order-1.order-md-2.mb-3.mb-md-0
-        if task.labels && task.labels.length
-          .mb-2
-            - const colors = ['bg-info', 'bg-warning', 'bg-success', 'bg-light', 'bg-secondary', 'bg-dark']
+        .mb-2
+          span.me-1.badge.bg-info.text-white= task.status ? task.status.name : ''
+
+          if task.labels && task.labels.length
+            - const colors = ['bg-warning', 'bg-success', 'bg-light', 'bg-secondary', 'bg-dark']
             each label, index in task.labels
               - const colorClass = colors[index % colors.length]
               - const textClass = ['bg-warning', 'bg-light'].includes(colorClass) ? 'text-dark' : 'text-white'
