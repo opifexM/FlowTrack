@@ -1,3 +1,4 @@
+import TaskModel from '../task/task.model.js';
 import { InUseError, NameExistsError, NotFoundError } from './label.error.js';
 import LabelModel from './label.model.js';
 
@@ -118,9 +119,9 @@ export const LabelService = {
       throw new NotFoundError(inputId);
     }
 
-    const inUseCount = await LabelModel
-      .relatedQuery('tasks', db)
-      .for(inputId)
+    const inUseCount = await TaskModel.query(db)
+      .joinRelated('labels')
+      .where('labels.id', inputId)
       .resultSize();
     if (inUseCount > 0) {
       logger.warn({ inUseCount }, 'Cannot delete label: still referenced in tasks');
