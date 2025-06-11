@@ -101,10 +101,11 @@ export const UserController = {
     });
     logger.info('Displaying login form');
 
-    const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
+    const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
+    const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
     const isAuthenticated = Boolean(request.session.get('userId'));
 
-    return reply.view('user/login', { flash, form, isAuthenticated });
+    return reply.view('user/login', { flash, form, fieldErrors, isAuthenticated });
   },
 
   async login(request, reply) {
