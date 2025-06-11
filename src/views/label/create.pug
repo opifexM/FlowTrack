@@ -7,6 +7,7 @@ block content
   .container.wrapper.flex-grow-1
     h1.display-4.fw-bold.mt-4= __('label-create.title')
     form(action="/labels", method="post")
+
       .form-floating.mb-3
         input.form-control(
           id="data_name"
@@ -14,10 +15,12 @@ block content
           type="text"
           placeholder=__('label-create.name')
           value=form.name || ''
-          required
           minlength=LABEL_VALIDATION.NAME.MIN
           maxlength=LABEL_VALIDATION.NAME.MAX
+          class={'is-invalid': fieldErrors.name}
         )
         label(for="data_name")= __('label-create.name')
+        if fieldErrors.name
+          .invalid-feedback= fieldErrors.name
 
       input.btn.btn-primary(type="submit", value=__('label-create.submit'))

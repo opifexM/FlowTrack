@@ -46,10 +46,11 @@ export const UserController = {
     });
 
     logger.info('Displaying user registration form');
-    const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
+    const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
+    const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
     const isAuthenticated = Boolean(request.session.get('userId'));
 
-    return reply.view('user/register', { flash, form, USER_VALIDATION, isAuthenticated });
+    return reply.view('user/register', { flash, form, fieldErrors, USER_VALIDATION, isAuthenticated });
   },
 
   async register(request, reply) {
@@ -199,11 +200,12 @@ export const UserController = {
         request.session.get('userId'),
       );
 
-      const flash = reply.flash() || {};
+      const { invalid = [], ...flash } = reply.flash?.() || {};
+      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ userId: foundUser.id }, 'User retrieved successfully');
 
-      return reply.view('user/edit', { flash, user: foundUser, isAuthenticated });
+      return reply.view('user/edit', { flash, user: foundUser, fieldErrors, isAuthenticated });
     }
     catch (error) {
       logger.error({

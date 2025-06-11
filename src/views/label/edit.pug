@@ -7,6 +7,7 @@ block content
   .container.wrapper.flex-grow-1
     h1.display-4.fw-bold.mt-4= __('label-edit.title')
     form(action=`/labels/${label.id}`, method="post")
+
       .form-floating.mb-3
         input.form-control(
           id="data_name"
@@ -14,11 +15,13 @@ block content
           type="text"
           placeholder=__('label-edit.name')
           value=label.name || ''
-          required
           minlength=LABEL_VALIDATION.NAME.MIN
           maxlength=LABEL_VALIDATION.NAME.MAX
+          class={'is-invalid': fieldErrors.name}
         )
         label(for="data_name")= __('label-edit.name')
+        if fieldErrors.name
+          .invalid-feedback= fieldErrors.name
 
       input(type="hidden", name="_method", value="patch")
       input.btn.btn-primary(type="submit", value=__('label-edit.submit'))

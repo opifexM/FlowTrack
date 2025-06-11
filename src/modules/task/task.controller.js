@@ -105,10 +105,11 @@ export const TaskController = {
         request.server.log,
         request.server.knex,
       );
-      const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
+      const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
+      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
 
-      return reply.view('task/create', { flash, form, TASK_VALIDATION, isAuthenticated, statuses, users, labels });
+      return reply.view('task/create', { flash, form, fieldErrors, TASK_VALIDATION, isAuthenticated, statuses, users, labels });
     }
     catch (error) {
       logger.error({
@@ -189,11 +190,12 @@ export const TaskController = {
         request.server.knex,
       );
 
-      const flash = reply.flash() || {};
+      const { invalid = [], ...flash } = reply.flash?.() || {};
+      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ taskId: foundTask.id }, 'Task retrieved successfully');
 
-      return reply.view('task/edit', { flash, task: foundTask, TASK_VALIDATION, isAuthenticated, statuses, users, labels });
+      return reply.view('task/edit', { flash, task: foundTask, fieldErrors, TASK_VALIDATION, isAuthenticated, statuses, users, labels });
     }
     catch (error) {
       logger.error({

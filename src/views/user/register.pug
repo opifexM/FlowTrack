@@ -14,17 +14,20 @@ block content
               img.rounded-circle(src="/assets/avatar.jpg", alt="Avatar")
             .col-12.col-md-6.mt-3.mt-mb-0
               form(action="/users", method="post")
+
                 .form-floating.mb-3
                   input.form-control#data_firstName(
                     name="data[firstName]"
                     type="text"
                     placeholder=__('user-register.firstName')
                     value=form.firstName || ''
-                    required
                     minlength=USER_VALIDATION.FIRST_NAME.MIN
                     maxlength=USER_VALIDATION.FIRST_NAME.MAX
+                    class={'is-invalid': fieldErrors.firstName}
                   )
                   label(for="data_firstName")= __('user-register.firstName')
+                  if fieldErrors.firstName
+                    .invalid-feedback= fieldErrors.firstName
 
                 .form-floating.mb-3
                   input.form-control#data_lastName(
@@ -32,11 +35,13 @@ block content
                     type="text"
                     placeholder=__('user-register.lastName')
                     value=form.lastName || ''
-                    required
                     minlength=USER_VALIDATION.LAST_NAME.MIN
                     maxlength=USER_VALIDATION.LAST_NAME.MAX
+                    class={'is-invalid': fieldErrors.lastName}
                   )
                   label(for="data_lastName")= __('user-register.lastName')
+                  if fieldErrors.lastName
+                    .invalid-feedback= fieldErrors.lastName
 
                 .form-floating.mb-3
                   input.form-control#data_email(
@@ -44,9 +49,11 @@ block content
                     type="email"
                     placeholder=__('user-register.email')
                     value=form.email || ''
-                    required
+                    class={'is-invalid': fieldErrors.email}
                   )
                   label(for="data_email")= __('user-register.email')
+                  if fieldErrors.email
+                    .invalid-feedback= fieldErrors.email
 
                 .form-floating.mb-3
                   input.form-control#data_password(
@@ -54,11 +61,13 @@ block content
                     type="password"
                     placeholder=__('user-register.password')
                     value=""
-                    required
                     minlength=USER_VALIDATION.PASSWORD.MIN
                     maxlength=USER_VALIDATION.PASSWORD.MAX
+                    class={'is-invalid': fieldErrors.password}
                   )
                   label(for="data_password")= __('user-register.password')
+                  if fieldErrors.password
+                    .invalid-feedback= fieldErrors.password
 
                 input.btn.btn-primary(
                   type="submit"

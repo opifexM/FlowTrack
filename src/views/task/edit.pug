@@ -7,6 +7,7 @@ block content
   .container.wrapper.flex-grow-1
     h1.display-4.fw-bold.mt-4= __('task-edit.title')
     form(action=`/tasks/${task.id}`, method="post", autocomplete="off")
+
       .form-floating.mb-3
         input.form-control(
           id="data_name"
@@ -14,11 +15,13 @@ block content
           type="text"
           placeholder=__('task-edit.name')
           value=task.name
-          required
           minlength=TASK_VALIDATION.NAME.MIN
           maxlength=TASK_VALIDATION.NAME.MAX
+          class={'is-invalid': fieldErrors.name}
         )
         label(for="data_name")= __('task-edit.name')
+        if fieldErrors.name
+          .invalid-feedback= fieldErrors.name
 
       .mb-3
         label(for="data_description")= __('task-edit.description')
@@ -29,27 +32,49 @@ block content
           placeholder=__('task-edit.description')
           minlength=TASK_VALIDATION.DESCRIPTION.MIN
           maxlength=TASK_VALIDATION.DESCRIPTION.MAX
+          class={'is-invalid': fieldErrors.description}
         )= task.description || ''
+        if fieldErrors.description
+          .invalid-feedback= fieldErrors.description
 
       .mb-3
         label(for="data_statusId")= __('task-edit.status')
-        select.form-control(id="data_statusId", name="data[statusId]")
+        select.form-control(
+          id="data_statusId",
+          name="data[statusId]"
+          class={'is-invalid': fieldErrors.statusId}
+        )
           option
           each status in statuses
             option(value=status.id, selected=task.status && task.status.id === status.id)= status.name
+        if fieldErrors.statusId
+          .invalid-feedback= fieldErrors.statusId
 
       .mb-3
         label(for="data_executorId")= __('task-edit.executor')
-        select.form-control(id="data_executorId", name="data[executorId]")
+        select.form-control(
+          id="data_executorId",
+          name="data[executorId]"
+          class={'is-invalid': fieldErrors.executorId}
+        )
           option
           each user in users
             option(value=user.id, selected=task.executor && task.executor.id === user.id)= `${user.firstName} ${user.lastName}`
+        if fieldErrors.executorId
+          .invalid-feedback= fieldErrors.executorId
 
       .mb-3
         label(for="data_labels")= __('task-edit.labels')
-        select.form-control(id="data_labels", name="data[labels]", multiple="multiple")
+        select.form-control(
+          id="data_labels",
+          name="data[labels]",
+          multiple="multiple"
+          class={'is-invalid': fieldErrors.labels}
+        )
           each label in labels
             option(value=label.id, selected=task.labels && task.labels.find(l => l.id === label.id))= label.name
+        if fieldErrors.labels
+          .invalid-feedback= fieldErrors.labels
 
       input(name="_method", type="hidden", value="patch")
       input.btn.btn-primary(type="submit", value=__('task-edit.submit'))

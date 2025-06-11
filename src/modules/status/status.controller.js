@@ -46,10 +46,11 @@ export const StatusController = {
     });
 
     logger.info('Displaying status creation form');
-    const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
+    const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
+    const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
     const isAuthenticated = Boolean(request.session.get('userId'));
 
-    return reply.view('status/create', { flash, form, STATUS_VALIDATION, isAuthenticated });
+    return reply.view('status/create', { flash, form, fieldErrors, STATUS_VALIDATION, isAuthenticated });
   },
 
   async create(request, reply) {
@@ -109,11 +110,12 @@ export const StatusController = {
         inputId,
       );
 
-      const flash = reply.flash() || {};
+      const { invalid = [], ...flash } = reply.flash?.() || {};
+      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ statusId: foundStatus.id }, 'Status retrieved successfully');
 
-      return reply.view('status/edit', { flash, status: foundStatus, STATUS_VALIDATION, isAuthenticated });
+      return reply.view('status/edit', { flash, status: foundStatus, fieldErrors, STATUS_VALIDATION, isAuthenticated });
     }
     catch (error) {
       logger.error({

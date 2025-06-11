@@ -46,10 +46,11 @@ export const LabelController = {
     });
 
     logger.info('Displaying label creation form');
-    const { formData: [form] = [{}], ...flash } = reply.flash?.() || {};
+    const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
+    const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
     const isAuthenticated = Boolean(request.session.get('userId'));
 
-    return reply.view('label/create', { flash, form, LABEL_VALIDATION, isAuthenticated });
+    return reply.view('label/create', { flash, form, fieldErrors, LABEL_VALIDATION, isAuthenticated });
   },
 
   async create(request, reply) {
@@ -109,11 +110,12 @@ export const LabelController = {
         inputId,
       );
 
-      const flash = reply.flash() || {};
+      const { invalid = [], ...flash } = reply.flash?.() || {};
+      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ labelId: foundLabel.id }, 'Label retrieved successfully');
 
-      return reply.view('label/edit', { flash, label: foundLabel, LABEL_VALIDATION, isAuthenticated });
+      return reply.view('label/edit', { flash, label: foundLabel, fieldErrors, LABEL_VALIDATION, isAuthenticated });
     }
     catch (error) {
       logger.error({
