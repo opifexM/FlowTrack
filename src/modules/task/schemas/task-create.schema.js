@@ -32,6 +32,10 @@ export const taskCreateSchema = createYupSchema(yup => ({
           t('task-create.errors.name.max', { count: TASK_VALIDATION.NAME.MAX }),
         ),
       description: yup.string()
+        .nullable()
+        .transform((value) => {
+          return value === '' ? null : value;
+        })
         .min(
           TASK_VALIDATION.DESCRIPTION.MIN,
           t('task-create.errors.description.min', { count: TASK_VALIDATION.DESCRIPTION.MIN }),
