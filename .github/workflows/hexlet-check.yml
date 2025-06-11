@@ -22,8 +22,7 @@ jobs:
         if: ${{ always() }}
         run: |
           mkdir -p tmp/artifacts
-          CID=$(docker ps --filter "name=source-app-1" --format "{{.ID}}")
-          docker cp "$CID":/project/tmp/artifacts tmp/artifacts || echo "No artifacts found"
+          docker compose cp app:/project/tmp/artifacts tmp/artifacts || echo "No artifacts found"
 
       - name: Upload test artifacts
         if: ${{ always() }}
