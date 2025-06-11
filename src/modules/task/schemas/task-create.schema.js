@@ -18,7 +18,7 @@ const { t } = i18next;
  *   body: { data: TaskCreateData }
  * }>}
  */
-export const taskCreateSchema = createYupSchema(yup => ({
+export const taskCreateSchema = createYupSchema((yup) => ({
   body: yup.object({
     data: yup.object({
       name: yup.string()
@@ -33,9 +33,7 @@ export const taskCreateSchema = createYupSchema(yup => ({
         ),
       description: yup.string()
         .nullable()
-        .transform((value) => {
-          return value === '' ? null : value;
-        })
+        .transform((value) => (value === '' ? null : value))
         .min(
           TASK_VALIDATION.DESCRIPTION.MIN,
           t('task-create.errors.description.min', { count: TASK_VALIDATION.DESCRIPTION.MIN }),

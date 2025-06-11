@@ -3,8 +3,8 @@ import i18next from 'i18next';
 
 const { t } = i18next;
 
-export default fp(async function (fastify, opts) {
-  fastify.decorate('authenticate', async function (request, reply) {
+export default fp(async (fastify, opts) => {
+  fastify.decorate('authenticate', async (request, reply) => {
     const userId = request.session.get('userId');
     if (!userId) {
       request.flash('danger', t('homepage.errors.forbidden'));

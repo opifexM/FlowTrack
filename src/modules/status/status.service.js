@@ -32,7 +32,7 @@ export const StatusService = {
     const logger = log.child({
       component: 'StatusService',
       method: 'getStatusById',
-      id: id,
+      id,
     });
     logger.info('Starting to retrieve Status by ID');
 
@@ -108,7 +108,7 @@ export const StatusService = {
     const logger = log.child({
       component: 'StatusService',
       method: 'deleteStatus',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Deleting status');
 
@@ -129,7 +129,7 @@ export const StatusService = {
 
     /** @type {number} */
     const deletedCount = await StatusModel.query(db).deleteById(inputId);
-    logger.info({ deletedCount: deletedCount }, 'Status deleted successfully');
+    logger.info({ deletedCount }, 'Status deleted successfully');
 
     return deletedCount;
   },
@@ -145,7 +145,7 @@ export const StatusService = {
     const logger = log.child({
       component: 'StatusService',
       method: 'updateStatus',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Updating status');
 

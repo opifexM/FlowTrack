@@ -14,7 +14,7 @@ const { t } = i18next;
  *   body: { data: LabelCreateData }
  * }>}
  */
-export const labelCreateSchema = createYupSchema(yup => ({
+export const labelCreateSchema = createYupSchema((yup) => ({
   body: yup.object({
     data: yup.object({
       name: yup.string()

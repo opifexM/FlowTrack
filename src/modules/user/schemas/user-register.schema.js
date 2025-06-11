@@ -17,7 +17,7 @@ const { t } = i18next;
  *   body: { data: UserRegisterData }
  * }>}
  */
-export const userRegisterSchema = createYupSchema(yup => ({
+export const userRegisterSchema = createYupSchema((yup) => ({
   body: yup.object({
     data: yup.object({
       firstName: yup.string()

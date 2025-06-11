@@ -32,7 +32,7 @@ export const LabelService = {
     const logger = log.child({
       component: 'LabelService',
       method: 'getLabelById',
-      id: id,
+      id,
     });
     logger.info('Starting to retrieve Label by ID');
 
@@ -108,7 +108,7 @@ export const LabelService = {
     const logger = log.child({
       component: 'LabelService',
       method: 'deleteLabel',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Deleting label');
 
@@ -130,7 +130,7 @@ export const LabelService = {
 
     /** @type {number} */
     const deletedCount = await LabelModel.query(db).deleteById(inputId);
-    logger.info({ deletedCount: deletedCount }, 'Label deleted successfully');
+    logger.info({ deletedCount }, 'Label deleted successfully');
 
     return deletedCount;
   },
@@ -146,7 +146,7 @@ export const LabelService = {
     const logger = log.child({
       component: 'LabelService',
       method: 'updateLabel',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Updating label');
 

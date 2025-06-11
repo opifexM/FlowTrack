@@ -4,7 +4,7 @@ import fp from 'fastify-plugin';
 dotenv.config();
 
 export default fp(
-  async function (fastify, opts) {
+  async (fastify, opts) => {
     const requiredEnvVars = [
       'ENVIRONMENT',
       'PG_HOST',
@@ -18,7 +18,7 @@ export default fp(
       'PASSWORD_SALT_SECRET',
     ];
 
-    const missingVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+    const missingVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
     if (missingVars.length > 0) {
       throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);

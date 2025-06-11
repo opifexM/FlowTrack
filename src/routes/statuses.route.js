@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import { statusCreateSchema } from '../modules/status/schemas/status-create.schema.js';
 import { StatusController } from '../modules/status/status.controller.js';
+
 const { t } = i18next;
 
 export default async function (fastify) {

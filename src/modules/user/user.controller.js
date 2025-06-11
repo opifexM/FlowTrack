@@ -24,8 +24,7 @@ export const UserController = {
       logger.info({ userCount: userList.length }, 'User list retrieved successfully');
 
       return reply.view('user/list', { flash, users: userList, isAuthenticated });
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -47,10 +46,12 @@ export const UserController = {
 
     logger.info('Displaying user registration form');
     const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-    const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+    const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
     const isAuthenticated = Boolean(request.session.get('userId'));
 
-    return reply.view('user/register', { flash, form, fieldErrors, USER_VALIDATION, isAuthenticated });
+    return reply.view('user/register', {
+      flash, form, fieldErrors, USER_VALIDATION, isAuthenticated,
+    });
   },
 
   async register(request, reply) {
@@ -71,8 +72,7 @@ export const UserController = {
       request.flash('info', t('user-register.success'));
 
       return reply.redirect('/');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -86,8 +86,7 @@ export const UserController = {
 
       if (error instanceof EmailExistsError) {
         request.flash('warning', t('user-register.errors.emailExists'));
-      }
-      else {
+      } else {
         request.flash('danger', t('user-register.errors.general'));
       }
 
@@ -103,10 +102,12 @@ export const UserController = {
     logger.info('Displaying login form');
 
     const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-    const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+    const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
     const isAuthenticated = Boolean(request.session.get('userId'));
 
-    return reply.view('user/login', { flash, form, fieldErrors, isAuthenticated });
+    return reply.view('user/login', {
+      flash, form, fieldErrors, isAuthenticated,
+    });
   },
 
   async login(request, reply) {
@@ -129,8 +130,7 @@ export const UserController = {
       logger.info({ userId: authenticatedUser.id }, 'User logged in successfully');
 
       return reply.redirect('/');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -145,8 +145,7 @@ export const UserController = {
 
       if (error instanceof InvalidCredentialsError) {
         request.flash('warning', t('user-login.errors.invalidCredentials'));
-      }
-      else {
+      } else {
         request.flash('danger', t('user-login.errors.general'));
       }
 
@@ -186,7 +185,7 @@ export const UserController = {
     const logger = request.log.child({
       component: 'UserController',
       method: 'showEditForm',
-      inputId: inputId,
+      inputId,
       userId: request.session.get('userId'),
     });
     logger.info('Displaying user edit form');
@@ -201,13 +200,14 @@ export const UserController = {
       );
 
       const { invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ userId: foundUser.id }, 'User retrieved successfully');
 
-      return reply.view('user/edit', { flash, user: foundUser, fieldErrors, isAuthenticated });
-    }
-    catch (error) {
+      return reply.view('user/edit', {
+        flash, user: foundUser, fieldErrors, isAuthenticated,
+      });
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -219,8 +219,7 @@ export const UserController = {
 
       if (error instanceof ForbiddenError) {
         request.flash('warning', t('user-edit.errors.forbidden'));
-      }
-      else {
+      } else {
         request.flash('danger', t('user-edit.errors.general'));
       }
 
@@ -234,8 +233,8 @@ export const UserController = {
     const logger = request.log.child({
       component: 'UserController',
       method: 'delete',
-      inputId: inputId,
-      userId: userId,
+      inputId,
+      userId,
     });
     logger.info('Starting user deletion');
 
@@ -252,11 +251,10 @@ export const UserController = {
       }
 
       request.flash('success', t('user-delete.success'));
-      logger.info({ deletedCount: deletedCount }, 'User deleted successfully');
+      logger.info({ deletedCount }, 'User deleted successfully');
 
       return reply.redirect('/users');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -269,8 +267,7 @@ export const UserController = {
 
       if (error instanceof ForbiddenError) {
         request.flash('warning', t('user-delete.errors.forbidden'));
-      }
-      else {
+      } else {
         request.flash('danger', t('user-delete.errors.general'));
       }
 
@@ -284,8 +281,8 @@ export const UserController = {
     const logger = request.log.child({
       component: 'UserController',
       method: 'update',
-      inputId: inputId,
-      userId: userId,
+      inputId,
+      userId,
     });
     logger.info('Starting user update');
 
@@ -302,8 +299,7 @@ export const UserController = {
       logger.info({ updatedUserId: updatedUser.id }, 'User updated successfully');
 
       return reply.redirect('/users');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -318,10 +314,9 @@ export const UserController = {
 
         return reply.redirect(`/users/${inputId}/edit`);
       }
-      else if (error instanceof ForbiddenError) {
+      if (error instanceof ForbiddenError) {
         request.flash('warning', t('user-update.errors.forbidden'));
-      }
-      else {
+      } else {
         request.flash('danger', t('user-update.errors.general'));
       }
 

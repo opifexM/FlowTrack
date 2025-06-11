@@ -34,7 +34,9 @@ export const TaskService = {
     });
     logger.info('Listing all tasks');
 
-    const { status, executor, isCreatorUser, label } = queryFilter;
+    const {
+      status, executor, isCreatorUser, label,
+    } = queryFilter;
 
     /** @type {Task[]} */
     const foundTasks = await TaskModel.query(db)
@@ -45,7 +47,7 @@ export const TaskService = {
 
     logger.info({ count: foundTasks.length }, 'Listed all tasks successfully');
 
-    return foundTasks.map(task => this.sanitizeTask(task));
+    return foundTasks.map((task) => this.sanitizeTask(task));
   },
 
   /**
@@ -58,7 +60,7 @@ export const TaskService = {
     const logger = log.child({
       component: 'TaskService',
       method: 'getTaskById',
-      id: id,
+      id,
     });
     logger.info('Starting to retrieve Task by ID');
 
@@ -115,18 +117,16 @@ export const TaskService = {
     }
 
     /** @type {Task} */
-    const createdTask = await TaskModel.transaction(db, async (trx) => {
-      return TaskModel.query(trx)
-        .insertGraphAndFetch({
-          ...data,
-          creatorId: userId,
-          labels: data.labels?.map(id => LabelModel.fromJson({ id })) || [],
-        }, {
-          relate: true,
-          unrelate: false,
-          allowRefs: true,
-        });
-    });
+    const createdTask = await TaskModel.transaction(db, async (trx) => TaskModel.query(trx)
+      .insertGraphAndFetch({
+        ...data,
+        creatorId: userId,
+        labels: data.labels?.map((id) => LabelModel.fromJson({ id })) || [],
+      }, {
+        relate: true,
+        unrelate: false,
+        allowRefs: true,
+      }));
 
     logger.info({ taskId: createdTask.id }, 'Task created successfully');
     return this.sanitizeTask(createdTask);
@@ -142,7 +142,7 @@ export const TaskService = {
     const logger = log.child({
       component: 'TaskService',
       method: 'deleteTask',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Deleting task');
 
@@ -155,7 +155,7 @@ export const TaskService = {
 
     /** @type {number} */
     const deletedCount = await TaskModel.query(db).deleteById(inputId);
-    logger.info({ deletedCount: deletedCount }, 'Task deleted successfully');
+    logger.info({ deletedCount }, 'Task deleted successfully');
 
     return deletedCount;
   },
@@ -172,7 +172,7 @@ export const TaskService = {
     const logger = log.child({
       component: 'TaskService',
       method: 'updateTask',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Updating task');
 
@@ -191,20 +191,18 @@ export const TaskService = {
     }
 
     /** @type {Task} */
-    const updatedTask = await TaskModel.transaction(db, async (trx) => {
-      return TaskModel.query(trx)
-        .upsertGraphAndFetch({
-          ...data,
-          id: inputId,
-          creatorId: userId,
-          labels: data.labels?.map(id => LabelModel.fromJson({ id })) || [],
-        }, {
-          relate: true,
-          unrelate: true,
-          update: true,
-          allowRefs: true,
-        });
-    });
+    const updatedTask = await TaskModel.transaction(db, async (trx) => TaskModel.query(trx)
+      .upsertGraphAndFetch({
+        ...data,
+        id: inputId,
+        creatorId: userId,
+        labels: data.labels?.map((id) => LabelModel.fromJson({ id })) || [],
+      }, {
+        relate: true,
+        unrelate: true,
+        update: true,
+        allowRefs: true,
+      }));
 
     logger.info({ taskId: updatedTask.id }, 'Task updated successfully');
     return this.sanitizeTask(updatedTask);
@@ -239,7 +237,7 @@ export const TaskService = {
 
     return {
       statuses,
-      users: users.map(user => UserService.sanitizeUser(user)),
+      users: users.map((user) => UserService.sanitizeUser(user)),
       labels,
     };
   },

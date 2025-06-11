@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import { LabelController } from '../modules/label/label.controller.js';
 import { labelCreateSchema } from '../modules/label/schemas/label-create.schema.js';
+
 const { t } = i18next;
 
 export default async function (fastify) {

@@ -24,8 +24,7 @@ export const LabelController = {
       logger.info({ labelCount: labelList.length }, 'Label list retrieved successfully');
 
       return reply.view('label/list', { flash, labels: labelList, isAuthenticated });
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -47,10 +46,12 @@ export const LabelController = {
 
     logger.info('Displaying label creation form');
     const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-    const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+    const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
     const isAuthenticated = Boolean(request.session.get('userId'));
 
-    return reply.view('label/create', { flash, form, fieldErrors, LABEL_VALIDATION, isAuthenticated });
+    return reply.view('label/create', {
+      flash, form, fieldErrors, LABEL_VALIDATION, isAuthenticated,
+    });
   },
 
   async create(request, reply) {
@@ -71,8 +72,7 @@ export const LabelController = {
       request.flash('info', t('label-create.success'));
 
       return reply.redirect('/labels');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -84,8 +84,7 @@ export const LabelController = {
 
       if (error instanceof NameExistsError) {
         request.flash('warning', t('label-create.errors.nameExists'));
-      }
-      else {
+      } else {
         request.flash('danger', t('label-create.errors.general'));
       }
 
@@ -98,7 +97,7 @@ export const LabelController = {
     const logger = request.log.child({
       component: 'LabelController',
       method: 'showEditForm',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Displaying label edit form');
 
@@ -111,13 +110,14 @@ export const LabelController = {
       );
 
       const { invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ labelId: foundLabel.id }, 'Label retrieved successfully');
 
-      return reply.view('label/edit', { flash, label: foundLabel, fieldErrors, LABEL_VALIDATION, isAuthenticated });
-    }
-    catch (error) {
+      return reply.view('label/edit', {
+        flash, label: foundLabel, fieldErrors, LABEL_VALIDATION, isAuthenticated,
+      });
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -129,8 +129,7 @@ export const LabelController = {
 
       if (error instanceof NotFoundError) {
         request.flash('warning', t('label-edit.errors.notFound'));
-      }
-      else {
+      } else {
         request.flash('danger', t('label-edit.errors.general'));
       }
 
@@ -143,7 +142,7 @@ export const LabelController = {
     const logger = request.log.child({
       component: 'LabelController',
       method: 'delete',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Starting label deletion');
 
@@ -155,11 +154,10 @@ export const LabelController = {
       );
 
       request.flash('success', t('label-delete.success'));
-      logger.info({ deletedCount: deletedCount }, 'Label deleted successfully');
+      logger.info({ deletedCount }, 'Label deleted successfully');
 
       return reply.redirect('/labels');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -171,13 +169,11 @@ export const LabelController = {
 
       if (error instanceof InUseError) {
         request.flash('warning', t('label-delete.errors.inUse'));
-      }
-      else if (error instanceof NotFoundError) {
+      } else if (error instanceof NotFoundError) {
         request.flash('warning', t('label-delete.errors.notFound'));
 
-        return reply.redirect(`/labels`);
-      }
-      else {
+        return reply.redirect('/labels');
+      } else {
         request.flash('danger', t('label-delete.errors.general'));
       }
 
@@ -190,7 +186,7 @@ export const LabelController = {
     const logger = request.log.child({
       component: 'LabelController',
       method: 'update',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Starting label update');
 
@@ -206,8 +202,7 @@ export const LabelController = {
       logger.info({ updatedLabelId: updatedLabel.id }, 'Label updated successfully');
 
       return reply.redirect('/labels');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -222,14 +217,13 @@ export const LabelController = {
 
         return reply.redirect(`/labels/${inputId}/edit`);
       }
-      else if (error instanceof NotFoundError) {
+      if (error instanceof NotFoundError) {
         request.flash('warning', t('label-update.errors.notFound'));
 
-        return reply.redirect(`/labels`);
+        return reply.redirect('/labels');
       }
-      else {
-        request.flash('danger', t('label-update.errors.general'));
-      }
+
+      request.flash('danger', t('label-update.errors.general'));
 
       return reply.redirect('/labels');
     }

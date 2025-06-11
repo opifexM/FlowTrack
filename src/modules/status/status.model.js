@@ -16,4 +16,4 @@ export default class StatusModel extends Model {
   static get idColumn() {
     return 'id';
   }
-};
+}

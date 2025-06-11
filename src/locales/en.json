@@ -1,6 +1,305 @@
 {
+  "local": "en-US",
   "homepage": {
+    "title": "FlowTrack",
     "headline": "FlowTrack — smart and simple task manager",
-    "subheadline": "Helps you organize tasks, track progress, and stay focused with ease."
+    "subheadline": "Helps you organize tasks, track progress, and stay focused with ease.",
+    "errors": {
+      "forbidden": "Access denied! Please log in."
+    }
+  },
+  "menu": {
+    "users": "Users",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "statuses": "Statuses",
+    "labels": "Labels",
+    "tasks": "Tasks"
+  },
+  "user-login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign In",
+    "success": "You are logged in",
+    "errors": {
+      "general": "Failed to log in as user",
+      "invalidCredentials": "Invalid email address or password",
+      "email": {
+        "invalid": "Invalid email format",
+        "required": "Email field is required"
+      },
+      "password": {
+        "required": "Password field is required"
+      }
+    }
+  },
+  "user-logout": {
+    "success": "You are logged out"
+  },
+  "user-register": {
+    "title": "Registration",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Save",
+    "success": "User successfully registered",
+    "errors": {
+      "general": "Failed to register",
+      "emailExists": "User with this email already exists",
+      "firstName": {
+        "min": "First name must be at least {{count}} characters long",
+        "max": "First name must be no longer than {{count}} characters",
+        "required": "First Name field is required"
+      },
+      "lastName": {
+        "min": "Last name must be at least {{count}} characters long",
+        "max": "Last name must be no longer than {{count}} characters",
+        "required": "Last Name field is required"
+      },
+      "email": {
+        "invalid": "Invalid email format",
+        "required": "Email field is required"
+      },
+      "password": {
+        "min": "Password must be at least {{count}} characters long",
+        "max": "Password must be no longer than {{count}} characters",
+        "required": "Password field is required"
+      }
+    }
+  },
+  "user-list": {
+    "title": "Users",
+    "name": "Full Name",
+    "email": "Email",
+    "created_at": "Created Date",
+    "action": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "errors": {
+      "general": "Failed to get user list"
+    }
+  },
+  "user-edit": {
+    "title": "Edit User",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Update",
+    "errors": {
+      "general": "Failed to get user data",
+      "forbidden": "You cannot edit or delete another user"
+    }
+  },
+  "user-delete": {
+    "success": "User successfully deleted",
+    "errors": {
+      "general": "Failed to delete user",
+      "forbidden": "You cannot edit or delete another user",
+      "inUse": "Failed to delete user - they are being used in tasks"
+    }
+  },
+  "user-update": {
+    "success": "User successfully updated",
+    "errors": {
+      "general": "Failed to update user",
+      "forbidden": "You cannot edit or delete another user"
+    }
+  },
+  "label-list": {
+    "title": "Labels",
+    "create": "Create Label",
+    "name": "Name",
+    "created_at": "Created Date",
+    "action": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "errors": {
+      "general": "Failed to get label list"
+    }
+  },
+  "label-create": {
+    "title": "Create Label",
+    "name": "Name",
+    "submit": "Create",
+    "success": "Label successfully created",
+    "errors": {
+      "general": "Failed to create label",
+      "nameExists": "Label with this name already exists",
+      "name": {
+        "min": "Name must be at least {{count}} characters long",
+        "max": "Name must be no longer than {{count}} characters",
+        "required": "Name field is required"
+      }
+    }
+  },
+  "label-edit": {
+    "title": "Edit Label",
+    "name": "Name",
+    "submit": "Update",
+    "errors": {
+      "general": "Failed to get label data",
+      "notFound": "Label not found"
+    }
+  },
+  "label-delete": {
+    "success": "Label successfully deleted",
+    "errors": {
+      "general": "Failed to delete label",
+      "inUse": "Failed to delete label - it is being used",
+      "notFound": "Label not found for deletion"
+    }
+  },
+  "label-update": {
+    "success": "Label successfully updated",
+    "errors": {
+      "general": "Failed to update label",
+      "nameExists": "Label with this name already exists",
+      "notFound": "Label not found for update"
+    }
+  },
+  "status-list": {
+    "title": "Statuses",
+    "create": "Create Status",
+    "name": "Name",
+    "created_at": "Created Date",
+    "action": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "errors": {
+      "general": "Failed to get status list"
+    }
+  },
+  "status-create": {
+    "title": "Create Status",
+    "name": "Name",
+    "submit": "Create",
+    "success": "Status successfully created",
+    "errors": {
+      "general": "Failed to create status",
+      "nameExists": "Status with this name already exists",
+      "name": {
+        "min": "Name must be at least {{count}} characters long",
+        "max": "Name must be no longer than {{count}} characters",
+        "required": "Name field is required"
+      }
+    }
+  },
+  "status-edit": {
+    "title": "Edit Status",
+    "name": "Name",
+    "submit": "Update",
+    "errors": {
+      "general": "Failed to get status data",
+      "notFound": "Status not found"
+    }
+  },
+  "status-delete": {
+    "success": "Status successfully deleted",
+    "errors": {
+      "general": "Failed to delete status",
+      "inUse": "Failed to delete status - it is being used",
+      "notFound": "Status not found for deletion"
+    }
+  },
+  "status-update": {
+    "success": "Status successfully updated",
+    "errors": {
+      "general": "Failed to update status",
+      "nameExists": "Status with this name already exists",
+      "notFound": "Status not found for update"
+    }
+  },
+  "task-list": {
+    "title": "Tasks",
+    "create": "Create Task",
+    "name": "Name",
+    "status": "Status",
+    "author": "Author",
+    "executor": "Executor",
+    "created_at": "Created Date",
+    "action": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "filters": {
+      "status": "Status",
+      "executor": "Executor",
+      "label": "Label",
+      "onlyMyTasks": "Only My Tasks",
+      "submit": "Show"
+    },
+    "errors": {
+      "general": "Failed to get task list"
+    }
+  },
+  "task-show": {
+    "title": "Task",
+    "author": "Author",
+    "executor": "Executor",
+    "created_at": "Created Date",
+    "action": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "errors": {
+      "general": "Failed to get task",
+      "notFound": "Task not found"
+    }
+  },
+  "task-create": {
+    "title": "Create Task",
+    "name": "Name",
+    "description": "Description",
+    "status": "Status",
+    "executor": "Executor",
+    "labels": "Labels",
+    "submit": "Create",
+    "success": "Task successfully created",
+    "errors": {
+      "general": "Failed to create task",
+      "nameExists": "Task with this name already exists",
+      "name": {
+        "min": "Name must be at least {{count}} characters long",
+        "max": "Name must be no longer than {{count}} characters",
+        "required": "Name field is required"
+      },
+      "description": {
+        "min": "Description must be at least {{count}} characters long",
+        "max": "Description must be no longer than {{count}} characters"
+      },
+      "status": {
+        "required": "Status field is required"
+      }
+    }
+  },
+  "task-edit": {
+    "title": "Edit Task",
+    "name": "Name",
+    "description": "Description",
+    "status": "Status",
+    "executor": "Executor",
+    "labels": "Labels",
+    "submit": "Update",
+    "errors": {
+      "general": "Failed to update task",
+      "notFound": "Task not found"
+    }
+  },
+  "task-delete": {
+    "success": "Task successfully deleted",
+    "errors": {
+      "general": "Failed to delete task",
+      "notFound": "Task not found for deletion"
+    }
+  },
+  "task-update": {
+    "success": "Task successfully updated",
+    "errors": {
+      "general": "Failed to update task",
+      "nameExists": "Task with this name already exists",
+      "notFound": "Task not found for update"
+    }
   }
 }

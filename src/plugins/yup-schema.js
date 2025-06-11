@@ -11,7 +11,7 @@ export default fp(async (fastify) => {
         return { value };
       };
     }
-    return data => ({ value: data });
+    return (data) => ({ value: data });
   });
 }, {
   name: 'yup-schema',

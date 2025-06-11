@@ -34,9 +34,10 @@ export const TaskController = {
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ taskCount: taskList.length }, 'Task list retrieved successfully');
 
-      return reply.view('task/list', { flash, tasks: taskList, isAuthenticated, statuses, users, labels, filters });
-    }
-    catch (error) {
+      return reply.view('task/list', {
+        flash, tasks: taskList, isAuthenticated, statuses, users, labels, filters,
+      });
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -55,7 +56,7 @@ export const TaskController = {
     const logger = request.log.child({
       component: 'TaskController',
       method: 'showTask',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Displaying task page');
 
@@ -71,8 +72,7 @@ export const TaskController = {
       logger.info({ taskId: foundTask.id }, 'Task retrieved successfully');
 
       return reply.view('task/show', { flash, task: foundTask, isAuthenticated });
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -84,8 +84,7 @@ export const TaskController = {
 
       if (error instanceof NotFoundError) {
         request.flash('warning', t('task-show.errors.notFound'));
-      }
-      else {
+      } else {
         request.flash('danger', t('task-show.errors.general'));
       }
 
@@ -106,12 +105,13 @@ export const TaskController = {
         request.server.knex,
       );
       const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
 
-      return reply.view('task/create', { flash, form, fieldErrors, TASK_VALIDATION, isAuthenticated, statuses, users, labels });
-    }
-    catch (error) {
+      return reply.view('task/create', {
+        flash, form, fieldErrors, TASK_VALIDATION, isAuthenticated, statuses, users, labels,
+      });
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -130,7 +130,7 @@ export const TaskController = {
     const logger = request.log.child({
       component: 'TaskController',
       method: 'create',
-      userId: userId,
+      userId,
     });
     logger.info('Starting task creation');
 
@@ -146,22 +146,20 @@ export const TaskController = {
       request.flash('info', t('task-create.success'));
 
       return reply.redirect('/tasks');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
         errorType: error.constructor.name,
         sessionUserId: request.session.get('userId'),
         requestId: request.id,
-        userId: userId,
+        userId,
       }, 'Task creation failed');
       request.flash('formData', request.body.data);
 
       if (error instanceof NameExistsError) {
         request.flash('warning', t('task-create.errors.nameExists'));
-      }
-      else {
+      } else {
         request.flash('danger', t('task-create.errors.general'));
       }
 
@@ -174,7 +172,7 @@ export const TaskController = {
     const logger = request.log.child({
       component: 'TaskController',
       method: 'showEditForm',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Displaying task edit form');
 
@@ -191,13 +189,14 @@ export const TaskController = {
       );
 
       const { invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ taskId: foundTask.id }, 'Task retrieved successfully');
 
-      return reply.view('task/edit', { flash, task: foundTask, fieldErrors, TASK_VALIDATION, isAuthenticated, statuses, users, labels });
-    }
-    catch (error) {
+      return reply.view('task/edit', {
+        flash, task: foundTask, fieldErrors, TASK_VALIDATION, isAuthenticated, statuses, users, labels,
+      });
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -209,8 +208,7 @@ export const TaskController = {
 
       if (error instanceof NotFoundError) {
         request.flash('warning', t('task-edit.errors.notFound'));
-      }
-      else {
+      } else {
         request.flash('danger', t('task-edit.errors.general'));
       }
 
@@ -223,7 +221,7 @@ export const TaskController = {
     const logger = request.log.child({
       component: 'TaskController',
       method: 'delete',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Starting task deletion');
 
@@ -235,11 +233,10 @@ export const TaskController = {
       );
 
       request.flash('success', t('task-delete.success'));
-      logger.info({ deletedCount: deletedCount }, 'Task deleted successfully');
+      logger.info({ deletedCount }, 'Task deleted successfully');
 
       return reply.redirect('/tasks');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -251,8 +248,7 @@ export const TaskController = {
 
       if (error instanceof NotFoundError) {
         request.flash('warning', t('task-delete.errors.notFound'));
-      }
-      else {
+      } else {
         request.flash('danger', t('task-delete.errors.general'));
       }
 
@@ -266,7 +262,7 @@ export const TaskController = {
     const logger = request.log.child({
       component: 'TaskController',
       method: 'update',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Starting task update');
 
@@ -283,8 +279,7 @@ export const TaskController = {
       logger.info({ updatedTaskId: updatedTask.id }, 'Task updated successfully');
 
       return reply.redirect('/tasks');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -299,14 +294,13 @@ export const TaskController = {
 
         return reply.redirect(`/tasks/${inputId}/edit`);
       }
-      else if (error instanceof NotFoundError) {
+      if (error instanceof NotFoundError) {
         request.flash('warning', t('task-update.errors.notFound'));
 
-        return reply.redirect(`/tasks`);
+        return reply.redirect('/tasks');
       }
-      else {
-        request.flash('danger', t('task-update.errors.general'));
-      }
+
+      request.flash('danger', t('task-update.errors.general'));
 
       return reply.redirect('/tasks');
     }

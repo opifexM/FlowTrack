@@ -16,7 +16,7 @@ const { t } = i18next;
  *   body: { data: TaskFilterQuery }
  * }>}
  */
-export const taskFilterSchema = createYupSchema(yup => ({
+export const taskFilterSchema = createYupSchema((yup) => ({
   querystring: yup
     .object({
       status: yup.string().default(''),
@@ -24,7 +24,7 @@ export const taskFilterSchema = createYupSchema(yup => ({
       label: yup.string().default(''),
       isCreatorUser: yup
         .boolean()
-        .transform(v => ['true', 'on', true].includes(v))
+        .transform((v) => ['true', 'on', true].includes(v))
         .default(false),
     })
     .required(),

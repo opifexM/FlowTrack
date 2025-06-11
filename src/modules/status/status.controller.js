@@ -24,8 +24,7 @@ export const StatusController = {
       logger.info({ statusCount: statusList.length }, 'Status list retrieved successfully');
 
       return reply.view('status/list', { flash, statuses: statusList, isAuthenticated });
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -47,10 +46,12 @@ export const StatusController = {
 
     logger.info('Displaying status creation form');
     const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-    const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+    const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
     const isAuthenticated = Boolean(request.session.get('userId'));
 
-    return reply.view('status/create', { flash, form, fieldErrors, STATUS_VALIDATION, isAuthenticated });
+    return reply.view('status/create', {
+      flash, form, fieldErrors, STATUS_VALIDATION, isAuthenticated,
+    });
   },
 
   async create(request, reply) {
@@ -71,8 +72,7 @@ export const StatusController = {
       request.flash('info', t('status-create.success'));
 
       return reply.redirect('/statuses');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -84,8 +84,7 @@ export const StatusController = {
 
       if (error instanceof NameExistsError) {
         request.flash('warning', t('status-create.errors.nameExists'));
-      }
-      else {
+      } else {
         request.flash('danger', t('status-create.errors.general'));
       }
 
@@ -98,7 +97,7 @@ export const StatusController = {
     const logger = request.log.child({
       component: 'StatusController',
       method: 'showEditForm',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Displaying status edit form');
 
@@ -111,13 +110,14 @@ export const StatusController = {
       );
 
       const { invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map(validationResult => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ statusId: foundStatus.id }, 'Status retrieved successfully');
 
-      return reply.view('status/edit', { flash, status: foundStatus, fieldErrors, STATUS_VALIDATION, isAuthenticated });
-    }
-    catch (error) {
+      return reply.view('status/edit', {
+        flash, status: foundStatus, fieldErrors, STATUS_VALIDATION, isAuthenticated,
+      });
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -129,8 +129,7 @@ export const StatusController = {
 
       if (error instanceof NotFoundError) {
         request.flash('warning', t('status-edit.errors.notFound'));
-      }
-      else {
+      } else {
         request.flash('danger', t('status-edit.errors.general'));
       }
 
@@ -144,7 +143,7 @@ export const StatusController = {
     const logger = request.log.child({
       component: 'StatusController',
       method: 'delete',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Starting status deletion');
 
@@ -156,11 +155,10 @@ export const StatusController = {
       );
 
       request.flash('success', t('status-delete.success'));
-      logger.info({ deletedCount: deletedCount }, 'Status deleted successfully');
+      logger.info({ deletedCount }, 'Status deleted successfully');
 
       return reply.redirect('/statuses');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -172,13 +170,11 @@ export const StatusController = {
 
       if (error instanceof InUseError) {
         request.flash('warning', t('status-delete.errors.inUse'));
-      }
-      else if (error instanceof NotFoundError) {
+      } else if (error instanceof NotFoundError) {
         request.flash('warning', t('status-delete.errors.notFound'));
 
-        return reply.redirect(`/statuses`);
-      }
-      else {
+        return reply.redirect('/statuses');
+      } else {
         request.flash('danger', t('status-delete.errors.general'));
       }
 
@@ -191,7 +187,7 @@ export const StatusController = {
     const logger = request.log.child({
       component: 'StatusController',
       method: 'update',
-      inputId: inputId,
+      inputId,
     });
     logger.info('Starting status update');
 
@@ -207,8 +203,7 @@ export const StatusController = {
       logger.info({ updatedStatusId: updatedStatus.id }, 'Status updated successfully');
 
       return reply.redirect('/statuses');
-    }
-    catch (error) {
+    } catch (error) {
       logger.error({
         error: error.message,
         stack: error.stack,
@@ -223,14 +218,13 @@ export const StatusController = {
 
         return reply.redirect(`/statuses/${inputId}/edit`);
       }
-      else if (error instanceof NotFoundError) {
+      if (error instanceof NotFoundError) {
         request.flash('warning', t('status-update.errors.notFound'));
 
-        return reply.redirect(`/statuses`);
+        return reply.redirect('/statuses');
       }
-      else {
-        request.flash('danger', t('status-update.errors.general'));
-      }
+
+      request.flash('danger', t('status-update.errors.general'));
 
       return reply.redirect('/statuses');
     }

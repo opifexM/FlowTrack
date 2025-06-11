@@ -23,4 +23,4 @@ export default class UserModel extends Model {
   static get idColumn() {
     return 'id';
   }
-};
+}

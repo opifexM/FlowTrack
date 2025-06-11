@@ -14,7 +14,7 @@ const { t } = i18next;
  *   body: { data: StatusCreateData }
  * }>}
  */
-export const statusCreateSchema = createYupSchema(yup => ({
+export const statusCreateSchema = createYupSchema((yup) => ({
   body: yup.object({
     data: yup.object({
       name: yup.string()

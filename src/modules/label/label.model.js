@@ -16,4 +16,4 @@ export default class LabelModel extends Model {
   static get idColumn() {
     return 'id';
   }
-};
+}

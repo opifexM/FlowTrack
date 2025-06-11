@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import { taskCreateSchema } from '../modules/task/schemas/task-create.schema.js';
 import { taskFilterSchema } from '../modules/task/schemas/task-filter-query.schema.js';
 import { TaskController } from '../modules/task/task.controller.js';
+
 const { t } = i18next;
 
 export default async function (fastify) {

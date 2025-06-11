@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import { userLoginSchema } from '../modules/user/schemas/user-login.schema.js';
 import { UserController } from '../modules/user/user.controller.js';
+
 const { t } = i18next;
 
 export default async function (fastify) {

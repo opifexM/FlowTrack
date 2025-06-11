@@ -3,7 +3,7 @@ import swaggerUi from '@fastify/swagger-ui';
 import fp from 'fastify-plugin';
 
 export default fp(
-  async function (fastify, opts) {
+  async (fastify, opts) => {
     await fastify.register(swagger, {
       openapi: {
         info: {

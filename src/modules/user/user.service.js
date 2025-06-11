@@ -1,6 +1,8 @@
 import * as crypto from 'node:crypto';
 import TaskModel from '../task/task.model.js';
-import { EmailExistsError, ForbiddenError, InUseError, InvalidCredentialsError } from './user.error.js';
+import {
+  EmailExistsError, ForbiddenError, InUseError, InvalidCredentialsError,
+} from './user.error.js';
 import UserModel from './user.model.js';
 
 const ENCODING = 'hex';
@@ -50,7 +52,7 @@ export const UserService = {
     const logger = log.child({
       component: 'UserService',
       method: 'getUserById',
-      id: id,
+      id,
     });
     logger.info('Starting to retrieve user by ID');
 
@@ -77,7 +79,7 @@ export const UserService = {
     const foundUsers = await UserModel.query(db).select();
     logger.info({ count: foundUsers.length }, 'Listed all users successfully');
 
-    return foundUsers.map(foundUser => this.sanitizeUser(foundUser));
+    return foundUsers.map((foundUser) => this.sanitizeUser(foundUser));
   },
 
   /**
@@ -91,8 +93,8 @@ export const UserService = {
     const logger = log.child({
       component: 'UserService',
       method: 'getAuthorizedUserById',
-      inputId: inputId,
-      userId: userId,
+      inputId,
+      userId,
     });
     logger.info('Starting to retrieve user by ID with authorization check');
 
@@ -204,8 +206,8 @@ export const UserService = {
     const logger = log.child({
       component: 'UserService',
       method: 'deleteUser',
-      inputId: inputId,
-      userId: userId,
+      inputId,
+      userId,
     });
     logger.info('Deleting user');
 
@@ -227,7 +229,7 @@ export const UserService = {
 
     /** @type {number} */
     const deletedCount = await UserModel.query(db).deleteById(inputId);
-    logger.info({ deletedCount: deletedCount }, 'User deleted successfully');
+    logger.info({ deletedCount }, 'User deleted successfully');
 
     return deletedCount;
   },
@@ -244,8 +246,8 @@ export const UserService = {
     const logger = log.child({
       component: 'UserService',
       method: 'updateUser',
-      inputId: inputId,
-      userId: userId,
+      inputId,
+      userId,
     });
     logger.info('Updating user');
 
