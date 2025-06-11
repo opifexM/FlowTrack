@@ -20,7 +20,6 @@ block content
                     type="email"
                     placeholder=__('user-login.email')
                     value=form.email || ''
-                    required
                   )
                   label(for="data_email")= __('user-login.email')
                 .form-floating.mb-3
@@ -29,7 +28,6 @@ block content
                     type="password"
                     placeholder=__('user-login.password')
                     value=""
-                    required
                   )
                   label(for="data_password")= __('user-login.password')
                 input.btn.btn-primary(
