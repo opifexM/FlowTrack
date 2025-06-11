@@ -20,8 +20,7 @@ export const userLoginSchema = createYupSchema(yup => ({
       email: yup.string()
         .required(t('user-login.errors.email.required'))
         .email(t('user-login.errors.email.invalid')),
-      password: yup.string()
-        .required(t('user-login.errors.password.required')),
+      password: yup.string().optional(),
     }).required(),
   }).required(),
 }));
