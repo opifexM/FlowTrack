@@ -18,6 +18,13 @@ jobs:
         with:
           hexlet-id: ${{ secrets.HEXLET_ID }}
 
+      - name: Copy test artifacts from container to host
+        if: ${{ always() }}
+        run: |
+          mkdir -p tmp/artifacts
+          CID=$(docker ps --filter "name=source-app-1" --format "{{.ID}}")
+          docker cp "$CID":/project/tmp/artifacts tmp/artifacts || echo "No artifacts found"
+
       - name: Upload test artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
