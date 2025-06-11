@@ -8,7 +8,7 @@ export default fp(async (fastify) => {
         return { field, message };
       });
       request.flash('invalid', details);
-      return reply.redirect(request.headers.referer || '/');
+      throw error;
     }
     request.log.error(error);
     reply.send(error);

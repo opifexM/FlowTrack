@@ -23,7 +23,11 @@ export default async function (fastify) {
     return TaskController.showTask(request, reply);
   });
 
-  fastify.post('/tasks', { preHandler: fastify.authenticate, schema: taskCreateSchema }, async (request, reply) => {
+  fastify.post('/tasks', {
+    preHandler: fastify.authenticate,
+    schema: taskCreateSchema,
+    errorHandler: async (error, request, reply) => TaskController.showCreateForm(request, reply),
+  }, async (request, reply) => {
     request.log.info('POST /tasks');
     return TaskController.create(request, reply);
   });
@@ -48,13 +52,18 @@ export default async function (fastify) {
     },
     preHandler: fastify.authenticate,
     schema: taskCreateSchema,
+    errorHandler: async (error, request, reply) => TaskController.showEditForm(request, reply),
     handler: async (request, reply) => {
       request.log.info('POST /tasks/:id (NO_OVERRIDE)');
       reply.code(400).send({ error: 'Method not supported' });
     },
   });
 
-  fastify.patch('/tasks/:id', { preHandler: fastify.authenticate, schema: taskCreateSchema }, async (request, reply) => {
+  fastify.patch('/tasks/:id', {
+    preHandler: fastify.authenticate,
+    schema: taskCreateSchema,
+    errorHandler: async (error, request, reply) => TaskController.showEditForm(request, reply),
+  }, async (request, reply) => {
     request.log.info('PATCH /tasks/:id');
     return TaskController.update(request, reply);
   });

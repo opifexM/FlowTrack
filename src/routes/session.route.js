@@ -7,6 +7,11 @@ export default async function (fastify) {
     return UserController.showLoginForm(request, reply);
   });
 
+  fastify.get('/session', async (request, reply) => {
+    request.log.info('GET /session/new');
+    return UserController.showLoginForm(request, reply);
+  });
+
   fastify.route({
     method: 'POST',
     url: '/session',
@@ -19,6 +24,7 @@ export default async function (fastify) {
       }
     },
     schema: userLoginSchema,
+    errorHandler: async (error, request, reply) => UserController.showLoginForm(request, reply),
     handler: async (request, reply) => {
       request.log.info('POST /session (NO_OVERRIDE)');
 

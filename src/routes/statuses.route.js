@@ -17,7 +17,11 @@ export default async function (fastify) {
     return StatusController.showEditForm(request, reply);
   });
 
-  fastify.post('/statuses', { preHandler: fastify.authenticate, schema: statusCreateSchema }, async (request, reply) => {
+  fastify.post('/statuses', {
+    preHandler: fastify.authenticate,
+    schema: statusCreateSchema,
+    errorHandler: async (error, request, reply) => StatusController.showCreateForm(request, reply),
+  }, async (request, reply) => {
     request.log.info('POST /statuses');
     return StatusController.create(request, reply);
   });
@@ -45,13 +49,18 @@ export default async function (fastify) {
     },
     preHandler: fastify.authenticate,
     schema: statusCreateSchema,
+    errorHandler: async (error, request, reply) => StatusController.showEditForm(request, reply),
     handler: async (request, reply) => {
       request.log.info('POST /statuses/:id (NO_OVERRIDE)');
       reply.code(400).send({ error: 'Method not supported' });
     },
   });
 
-  fastify.patch('/statuses/:id', { preHandler: fastify.authenticate, schema: statusCreateSchema }, async (request, reply) => {
+  fastify.patch('/statuses/:id', {
+    preHandler: fastify.authenticate,
+    schema: statusCreateSchema,
+    errorHandler: async (error, request, reply) => StatusController.showEditForm(request, reply),
+  }, async (request, reply) => {
     request.log.info('PATCH /statuses/:id');
     return StatusController.update(request, reply);
   });

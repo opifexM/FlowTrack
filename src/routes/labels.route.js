@@ -17,7 +17,11 @@ export default async function (fastify) {
     return LabelController.showEditForm(request, reply);
   });
 
-  fastify.post('/labels', { preHandler: fastify.authenticate, schema: labelCreateSchema }, async (request, reply) => {
+  fastify.post('/labels', {
+    preHandler: fastify.authenticate,
+    schema: labelCreateSchema,
+    errorHandler: async (error, request, reply) => LabelController.showCreateForm(request, reply),
+  }, async (request, reply) => {
     request.log.info('POST /labels');
     return LabelController.create(request, reply);
   });
@@ -45,13 +49,18 @@ export default async function (fastify) {
     },
     preHandler: fastify.authenticate,
     schema: labelCreateSchema,
+    errorHandler: async (error, request, reply) => LabelController.showEditForm(request, reply),
     handler: async (request, reply) => {
       request.log.info('POST /labels/:id (NO_OVERRIDE)');
       reply.code(400).send({ error: 'Method not supported' });
     },
   });
 
-  fastify.patch('/labels/:id', { preHandler: fastify.authenticate, schema: labelCreateSchema }, async (request, reply) => {
+  fastify.patch('/labels/:id', {
+    preHandler: fastify.authenticate,
+    schema: labelCreateSchema,
+    errorHandler: async (error, request, reply) => LabelController.showEditForm(request, reply),
+  }, async (request, reply) => {
     request.log.info('PATCH /labels/:id');
     return LabelController.update(request, reply);
   });

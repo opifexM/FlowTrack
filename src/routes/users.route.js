@@ -17,7 +17,10 @@ export default async function (fastify) {
     return UserController.showEditForm(request, reply);
   });
 
-  fastify.post('/users', { schema: userRegisterSchema }, async (request, reply) => {
+  fastify.post('/users', {
+    schema: userRegisterSchema,
+    errorHandler: async (error, request, reply) => UserController.showRegisterForm(request, reply),
+  }, async (request, reply) => {
     request.log.info('POST /users');
     return UserController.register(request, reply);
   });
@@ -45,13 +48,18 @@ export default async function (fastify) {
     },
     preHandler: fastify.authenticate,
     schema: userRegisterSchema,
+    errorHandler: async (error, request, reply) => UserController.showRegisterForm(request, reply),
     handler: async (request, reply) => {
       request.log.info('POST /users/:id (NO_OVERRIDE)');
       reply.code(400).send({ error: 'Method not supported' });
     },
   });
 
-  fastify.patch('/users/:id', { preHandler: fastify.authenticate, schema: userRegisterSchema }, async (request, reply) => {
+  fastify.patch('/users/:id', {
+    preHandler: fastify.authenticate,
+    schema: userRegisterSchema,
+    errorHandler: async (error, request, reply) => UserController.showRegisterForm(request, reply),
+  }, async (request, reply) => {
     request.log.info('PATCH /users/:id');
     return UserController.update(request, reply);
   });
