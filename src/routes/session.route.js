@@ -10,11 +10,6 @@ export default async function (fastify) {
     return UserController.showLoginForm(request, reply);
   });
 
-  fastify.get('/session', async (request, reply) => {
-    request.log.info('GET /session/new');
-    return UserController.showLoginForm(request, reply);
-  });
-
   fastify.route({
     method: 'POST',
     url: '/session',

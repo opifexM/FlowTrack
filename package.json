@@ -52,5 +52,8 @@
     "@playwright/test": "^1.53.0",
     "jest": "^30.0.0",
     "read-package-json-fast": "^4.0.0"
+  },
+  "jest": {
+    "testMatch": ["**/__tests__/**/*.test.js"]
   }
 }

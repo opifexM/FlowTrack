@@ -68,19 +68,6 @@ The application supports user registration, login, and session management. Authe
 - **fastify-yup-schema**: Integration between Yup and Fastify.
 - **i18next**, **i18next-fs-backend**: Internationalization framework with filesystem backend support.
 
-### Tooling and Testing
-
-- **ESLint**: Code linter ensuring consistent coding standards.
-- **Jest**: JavaScript testing framework.
-- **Playwright**: End-to-end testing framework for modern browsers.
-- **dotenv**: Loads environment variables from `.env` file.
-- **Rollbar**: Real-time error monitoring and alerting.
-
-### Additional Utilities
-
-- **qs**: Query string parser with nested object support.
-- **fastify-method-override**: Middleware for HTTP method overriding via query or form field.
-
 ## Scripts
 
 Run DB migrations and start the app

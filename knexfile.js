@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import {dirname} from 'node:path';
-import {fileURLToPath} from 'node:url';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 dotenv.config();
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -16,23 +16,23 @@ const knexConfig = {
       database: process.env.PG_DATABASE,
     },
     migrations: {
-      directory: __dirname + '/db/migrations',
+      directory: `${__dirname}/db/migrations`,
     },
     seeds: {
-      directory: __dirname + '/db/seeds',
+      directory: `${__dirname}/db/seeds`,
     },
   },
 
   development: {
     client: 'sqlite3',
     connection: {
-      filename: __dirname + '/db/sqlite.db',
+      filename: `${__dirname}/db/sqlite.db`,
     },
     migrations: {
-      directory: __dirname + '/db/migrations',
+      directory: `${__dirname}/db/migrations`,
     },
     seeds: {
-      directory: __dirname + '/db/seeds',
+      directory: `${__dirname}/db/seeds`,
     },
     useNullAsDefault: true,
   },
