@@ -9,6 +9,7 @@ export default fp(
       ? 'development'
       : 'production';
 
+    fastify.log.info(`DB configuration: ${env}`);
     const db = knex(knexConfig[env]);
     Model.knex(db);
 
