@@ -162,8 +162,10 @@ describe('Task Management Routes', () => {
       expect(res.statusCode).toBe(302);
       expect(res.headers.location).toBe('/tasks');
     });
+  });
 
-    it('should return no tasks when status does not match', async () => {
+  describe('Task Filtering', () => {
+    it('GET /tasks?status should return no tasks when status does not match', async () => {
       const fakeStatusId = 'non-existent';
       const res = await authRequest(
         { method: 'GET', url: `/tasks?status=${fakeStatusId}` },
@@ -171,6 +173,15 @@ describe('Task Management Routes', () => {
       );
       expect(res.statusCode).toBe(200);
       expect(res.payload).not.toContain(tasksData.existing.name);
+    });
+
+    it('GET /tasks?isCreatorUser=true should check only-my-tasks box', async () => {
+      const res = await authRequest(
+        { method: 'GET', url: '/tasks?isCreatorUser=true' },
+        validCredentials,
+      );
+      expect(res.statusCode).toBe(200);
+      expect(res.payload).toMatch(/name="isCreatorUser"[^>]*checked/);
     });
   });
 });
