@@ -265,9 +265,11 @@ export const UserService = {
       logger.warn('Email already in use');
       throw new EmailExistsError(data.email);
     }
+    const hashedPassword = this.createSHA(logger, data.password);
 
     /** @type {User} */
-    const updatedUser = await UserModel.query(db).patchAndFetchById(inputId, data);
+    const updatedUser = await UserModel.query(db)
+      .patchAndFetchById(inputId, { ...data, password: hashedPassword });
     logger.info({ updatedUserId: updatedUser.id }, 'User updated successfully');
 
     return this.sanitizeUser(updatedUser);

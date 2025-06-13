@@ -12,7 +12,7 @@ export const RootController = {
   },
 };
 
-export function getStatusControllerInfo() {
+export function getRootControllerInfo() {
   return {
     name: 'RootController',
     description: 'Controller for handling main page',
