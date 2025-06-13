@@ -12,3 +12,10 @@ export const USER_VALIDATION = {
     MAX: 100,
   },
 };
+
+export function getUserValidationInfo() {
+  return {
+    name: 'USER_VALIDATION',
+    description: 'Validation rules for user fields',
+  };
+}

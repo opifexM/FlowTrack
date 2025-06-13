@@ -1,7 +1,4 @@
 import { createYupSchema } from 'fastify-yup-schema';
-import i18next from 'i18next';
-
-const { t } = i18next;
 
 /**
  * @typedef {Object} TaskFilterQuery
@@ -29,3 +26,10 @@ export const taskFilterSchema = createYupSchema((yup) => ({
     })
     .required(),
 }));
+
+export function getTaskFilterSchemaInfo() {
+  return {
+    name: 'taskFilterSchema',
+    description: 'Yup schema for task filter query validation',
+  };
+}

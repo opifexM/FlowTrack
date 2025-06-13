@@ -59,3 +59,10 @@ export const userRegisterSchema = createYupSchema((yup) => ({
     }).required(),
   }).required(),
 }));
+
+export function getUserRegisterSchemaInfo() {
+  return {
+    name: 'userRegisterSchema',
+    description: 'Yup schema for user register payload validation',
+  };
+}

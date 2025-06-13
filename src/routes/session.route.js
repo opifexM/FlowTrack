@@ -4,7 +4,7 @@ import { UserController } from '../modules/user/user.controller.js';
 
 const { t } = i18next;
 
-export default async function (fastify) {
+export default async function sessionRoute(fastify) {
   fastify.get('/session/new', async (request, reply) => {
     request.log.info('GET /session/new');
     return UserController.showLoginForm(request, reply);
@@ -14,12 +14,15 @@ export default async function (fastify) {
     method: 'POST',
     url: '/session',
     preValidation: async (request, reply) => {
+      // eslint-disable-next-line no-underscore-dangle
       request.log.info({ body: request.body?._method }, 'PREVALIDATION POST /session');
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'delete') {
         request.log.info('DELETE /session (OVERRIDE)');
 
         return UserController.logout(request, reply);
       }
+      return undefined;
     },
     schema: userLoginSchema,
     errorHandler: async (error, request, reply) => {

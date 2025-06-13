@@ -1,5 +1,7 @@
 import i18next from 'i18next';
-import { InUseError, NameExistsError, NotFoundError } from './label.error.js';
+import { InUseError } from './errors/in-use.error.js';
+import { NameExistsError } from './errors/name-exists.error.js';
+import { NotFoundError } from './errors/not-found.error.js';
 import { LabelService } from './label.service.js';
 import { LABEL_VALIDATION } from './schemas/label-validation.js';
 
@@ -46,7 +48,9 @@ export const LabelController = {
 
     logger.info('Displaying label creation form');
     const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-    const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+    const fieldErrors = Object.fromEntries(
+      invalid.map(({ field, message }) => [field, message]),
+    );
     const isAuthenticated = Boolean(request.session.get('userId'));
 
     return reply.view('label/create', {
@@ -110,7 +114,9 @@ export const LabelController = {
       );
 
       const { invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(
+        invalid.map(({ field, message }) => [field, message]),
+      );
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ labelId: foundLabel.id }, 'Label retrieved successfully');
 
@@ -229,3 +235,10 @@ export const LabelController = {
     }
   },
 };
+
+export function getLabelControllerInfo() {
+  return {
+    name: 'LabelController',
+    description: 'Controller for handling label CRUD operations',
+  };
+}

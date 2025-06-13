@@ -1,5 +1,7 @@
 import TaskModel from '../task/task.model.js';
-import { InUseError, NameExistsError, NotFoundError } from './status.error.js';
+import { InUseError } from './errors/in-use.error.js';
+import { NameExistsError } from './errors/name-exists.error.js';
+import { NotFoundError } from './errors/not-found.error.js';
 import StatusModel from './status.model.js';
 
 export const StatusService = {
@@ -170,3 +172,10 @@ export const StatusService = {
     return updatedStatus;
   },
 };
+
+export function getStatusServiceInfo() {
+  return {
+    name: 'StatusService',
+    description: 'Service for managing status data',
+  };
+}

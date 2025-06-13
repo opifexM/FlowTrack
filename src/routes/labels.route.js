@@ -4,7 +4,7 @@ import { labelCreateSchema } from '../modules/label/schemas/label-create.schema.
 
 const { t } = i18next;
 
-export default async function (fastify) {
+export default async function labelsRoute(fastify) {
   fastify.get('/labels', { preHandler: fastify.authenticate }, async (request, reply) => {
     request.log.info('GET /labels');
     return LabelController.showLabelList(request, reply);
@@ -38,7 +38,9 @@ export default async function (fastify) {
     method: 'POST',
     url: '/labels/:id',
     preValidation: async (request, reply) => {
+      // eslint-disable-next-line no-underscore-dangle
       request.log.info({ body: request.body?._method }, 'PREVALIDATION POST /labels/:id');
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'patch') {
         request.log.info('PATCH /labels/:id (OVERRIDE)');
 
@@ -47,6 +49,7 @@ export default async function (fastify) {
 
         return LabelController.update(request, reply);
       }
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'delete') {
         request.log.info('DELETE /labels/:id (OVERRIDE)');
 
@@ -54,6 +57,7 @@ export default async function (fastify) {
 
         return LabelController.delete(request, reply);
       }
+      return undefined;
     },
     preHandler: fastify.authenticate,
     schema: labelCreateSchema,

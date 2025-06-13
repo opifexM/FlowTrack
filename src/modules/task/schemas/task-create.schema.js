@@ -62,3 +62,10 @@ export const taskCreateSchema = createYupSchema((yup) => ({
     }).required(),
   }).required(),
 }));
+
+export function getTaskCreateSchemaInfo() {
+  return {
+    name: 'taskCreateSchema',
+    description: 'Yup schema for task payload validation',
+  };
+}

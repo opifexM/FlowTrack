@@ -3,7 +3,7 @@ import fp from 'fastify-plugin';
 import qs from 'qs';
 
 export default fp(
-  async (fastify, opts) => {
+  async (fastify) => {
     await fastify.register(fastifyFormbody, {
       parser: (payload) => qs.parse(payload),
     });

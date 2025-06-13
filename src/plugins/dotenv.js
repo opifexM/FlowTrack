@@ -4,7 +4,7 @@ import fp from 'fastify-plugin';
 dotenv.config();
 
 export default fp(
-  async (fastify, opts) => {
+  async (fastify) => {
     const requiredEnvVars = [
       'ENVIRONMENT',
       'PG_HOST',

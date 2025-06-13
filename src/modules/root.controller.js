@@ -11,3 +11,10 @@ export const RootController = {
     return reply.view('index', { flash, isAuthenticated });
   },
 };
+
+export function getStatusControllerInfo() {
+  return {
+    name: 'RootController',
+    description: 'Controller for handling main page',
+  };
+}

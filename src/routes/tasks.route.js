@@ -5,7 +5,7 @@ import { TaskController } from '../modules/task/task.controller.js';
 
 const { t } = i18next;
 
-export default async function (fastify) {
+export default async function tasksRoute(fastify) {
   fastify.get('/tasks', { preHandler: fastify.authenticate, schema: taskFilterSchema }, async (request, reply) => {
     request.log.info('GET /tasks');
     return TaskController.showTaskList(request, reply);
@@ -44,19 +44,23 @@ export default async function (fastify) {
     method: 'POST',
     url: '/tasks/:id',
     preValidation: async (request, reply) => {
+      // eslint-disable-next-line no-underscore-dangle
       request.log.info({ body: request.body?._method }, 'PREVALIDATION POST /tasks/:id');
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'patch') {
         request.log.info('PATCH /tasks/:id (OVERRIDE)');
         await fastify.authenticate(request, reply);
 
         return TaskController.update(request, reply);
       }
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'delete') {
         request.log.info('DELETE /tasks/:id (OVERRIDE)');
         await fastify.authenticate(request, reply);
 
         return TaskController.delete(request, reply);
       }
+      return undefined;
     },
     preHandler: fastify.authenticate,
     schema: taskCreateSchema,

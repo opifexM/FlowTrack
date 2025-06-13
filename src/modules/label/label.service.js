@@ -1,5 +1,7 @@
 import TaskModel from '../task/task.model.js';
-import { InUseError, NameExistsError, NotFoundError } from './label.error.js';
+import { InUseError } from './errors/in-use.error.js';
+import { NameExistsError } from './errors/name-exists.error.js';
+import { NotFoundError } from './errors/not-found.error.js';
 import LabelModel from './label.model.js';
 
 export const LabelService = {
@@ -171,3 +173,10 @@ export const LabelService = {
     return updatedLabel;
   },
 };
+
+export function getLabelServiceInfo() {
+  return {
+    name: 'LabelService',
+    description: 'Service for managing label data',
+  };
+}

@@ -30,3 +30,10 @@ export const statusCreateSchema = createYupSchema((yup) => ({
     }).required(),
   }).required(),
 }));
+
+export function getStatusCreateSchemaInfo() {
+  return {
+    name: 'statusCreateSchema',
+    description: 'Yup schema for status payload validation',
+  };
+}

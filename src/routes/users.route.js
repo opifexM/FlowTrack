@@ -4,7 +4,7 @@ import { UserController } from '../modules/user/user.controller.js';
 
 const { t } = i18next;
 
-export default async function (fastify) {
+export default async function usersRoutes(fastify) {
   fastify.get('/users', async (request, reply) => {
     request.log.info('GET /users');
     return UserController.showUserList(request, reply);
@@ -37,7 +37,9 @@ export default async function (fastify) {
     method: 'POST',
     url: '/users/:id',
     preValidation: async (request, reply) => {
+      // eslint-disable-next-line no-underscore-dangle
       request.log.info({ body: request.body?._method }, 'PREVALIDATION POST /users/:id');
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'patch') {
         request.log.info('PATCH /users/:id (OVERRIDE)');
 
@@ -46,6 +48,7 @@ export default async function (fastify) {
 
         return UserController.update(request, reply);
       }
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'delete') {
         request.log.info('DELETE /users/:id (OVERRIDE)');
 
@@ -53,6 +56,7 @@ export default async function (fastify) {
 
         return UserController.delete(request, reply);
       }
+      return undefined;
     },
     preHandler: fastify.authenticate,
     schema: userRegisterSchema,

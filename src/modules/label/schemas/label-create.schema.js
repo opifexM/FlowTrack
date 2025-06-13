@@ -30,3 +30,10 @@ export const labelCreateSchema = createYupSchema((yup) => ({
     }).required(),
   }).required(),
 }));
+
+export function getLabelCreateSchemaInfo() {
+  return {
+    name: 'labelCreateSchema',
+    description: 'Yup schema for label payload validation',
+  };
+}

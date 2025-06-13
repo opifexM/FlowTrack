@@ -4,7 +4,7 @@ import { StatusController } from '../modules/status/status.controller.js';
 
 const { t } = i18next;
 
-export default async function (fastify) {
+export default async function statusesRoute(fastify) {
   fastify.get('/statuses', { preHandler: fastify.authenticate }, async (request, reply) => {
     request.log.info('GET /statuses');
     return StatusController.showStatusList(request, reply);
@@ -38,7 +38,9 @@ export default async function (fastify) {
     method: 'POST',
     url: '/statuses/:id',
     preValidation: async (request, reply) => {
+      // eslint-disable-next-line no-underscore-dangle
       request.log.info({ body: request.body?._method }, 'PREVALIDATION POST /statuses/:id');
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'patch') {
         request.log.info('PATCH /statuses/:id (OVERRIDE)');
 
@@ -47,6 +49,7 @@ export default async function (fastify) {
 
         return StatusController.update(request, reply);
       }
+      // eslint-disable-next-line no-underscore-dangle
       if (request.body && request.body._method === 'delete') {
         request.log.info('DELETE /statuses/:id (OVERRIDE)');
 
@@ -54,6 +57,7 @@ export default async function (fastify) {
 
         return StatusController.delete(request, reply);
       }
+      return undefined;
     },
     preHandler: fastify.authenticate,
     schema: statusCreateSchema,

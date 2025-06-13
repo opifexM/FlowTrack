@@ -7,7 +7,7 @@ import pug from 'pug';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default fp(async (fastify, opts) => {
+export default fp(async (fastify) => {
   await fastify.register(view, {
     engine: {
       pug,

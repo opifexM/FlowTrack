@@ -29,6 +29,7 @@
     "fastify": "4.29.1",
     "fastify-method-override": "^1.5.10",
     "fastify-method-override-wrapper": "^1.0.6",
+    "fastify-plugin": "^5.0.1",
     "fastify-yup-schema": "^1.0.4",
     "i18next": "^25.2.1",
     "i18next-fs-backend": "^2.6.0",

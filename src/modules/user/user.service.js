@@ -1,8 +1,9 @@
 import * as crypto from 'node:crypto';
 import TaskModel from '../task/task.model.js';
-import {
-  EmailExistsError, ForbiddenError, InUseError, InvalidCredentialsError,
-} from './user.error.js';
+import { EmailExistsError } from './errors/email-exists.error.js';
+import { ForbiddenError } from './errors/forbidden.error.js';
+import { InUseError } from './errors/in-use.error.js';
+import { InvalidCredentialsError } from './errors/invalid-credentials.error.js';
 import UserModel from './user.model.js';
 
 const ENCODING = 'hex';
@@ -272,3 +273,10 @@ export const UserService = {
     return this.sanitizeUser(updatedUser);
   },
 };
+
+export function getUserServiceInfo() {
+  return {
+    name: 'UserService',
+    description: 'Service for managing user data',
+  };
+}

@@ -1,4 +1,4 @@
-export default async function (fastify) {
+export default async function langRoute(fastify) {
   fastify.get('/lang/:lng', (request, reply) => {
     const { lng } = request.params;
     request.log.info('GET /lang');

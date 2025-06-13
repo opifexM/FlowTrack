@@ -8,9 +8,9 @@ export class NameExistsError extends Error {
   }
 }
 
-export class NotFoundError extends Error {
-  constructor(id) {
-    super(`The task with ID '${id}' not found`);
-    this.name = 'NotFoundError';
-  }
+export function getNameExistsErrorInfo() {
+  return {
+    name: 'NameExistsError',
+    description: 'Error thrown when a task with the given name already exists',
+  };
 }

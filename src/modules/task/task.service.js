@@ -2,7 +2,8 @@ import LabelModel from '../label/label.model.js';
 import StatusModel from '../status/status.model.js';
 import UserModel from '../user/user.model.js';
 import { UserService } from '../user/user.service.js';
-import { NameExistsError, NotFoundError } from './task.error.js';
+import { NameExistsError } from './errors/name-exists.error.js';
+import { NotFoundError } from './errors/not-found.error.js';
 import TaskModel from './task.model.js';
 
 export const TaskService = {
@@ -242,3 +243,10 @@ export const TaskService = {
     };
   },
 };
+
+export function getTaskServiceInfo() {
+  return {
+    name: 'TaskService',
+    description: 'Service for managing task data',
+  };
+}

@@ -24,3 +24,10 @@ export const userLoginSchema = createYupSchema((yup) => ({
     }).required(),
   }).required(),
 }));
+
+export function getUserLoginSchemaInfo() {
+  return {
+    name: 'userLoginSchema',
+    description: 'Yup schema for user login payload validation',
+  };
+}

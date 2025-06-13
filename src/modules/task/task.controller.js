@@ -1,6 +1,7 @@
 import i18next from 'i18next';
+import { NameExistsError } from './errors/name-exists.error.js';
+import { NotFoundError } from './errors/not-found.error.js';
 import { TASK_VALIDATION } from './schemas/task-validation.js';
-import { NameExistsError, NotFoundError } from './task.error.js';
 import { TaskService } from './task.service.js';
 
 const { t } = i18next;
@@ -105,7 +106,9 @@ export const TaskController = {
         request.server.knex,
       );
       const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(
+        invalid.map(({ field, message }) => [field, message]),
+      );
       const isAuthenticated = Boolean(request.session.get('userId'));
 
       return reply.view('task/create', {
@@ -189,12 +192,21 @@ export const TaskController = {
       );
 
       const { invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(
+        invalid.map(({ field, message }) => [field, message]),
+      );
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ taskId: foundTask.id }, 'Task retrieved successfully');
 
       return reply.view('task/edit', {
-        flash, task: foundTask, fieldErrors, TASK_VALIDATION, isAuthenticated, statuses, users, labels,
+        flash,
+        task: foundTask,
+        fieldErrors,
+        TASK_VALIDATION,
+        isAuthenticated,
+        statuses,
+        users,
+        labels,
       });
     } catch (error) {
       logger.error({
@@ -306,3 +318,10 @@ export const TaskController = {
     }
   },
 };
+
+export function getTaskControllerInfo() {
+  return {
+    name: 'TaskController',
+    description: 'Controller for handling task CRUD operations',
+  };
+}

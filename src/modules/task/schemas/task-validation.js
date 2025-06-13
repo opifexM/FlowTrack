@@ -8,3 +8,10 @@ export const TASK_VALIDATION = {
     MAX: 10000,
   },
 };
+
+export function getTaskValidationInfo() {
+  return {
+    name: 'TASK_VALIDATION',
+    description: 'Validation rules for task fields',
+  };
+}

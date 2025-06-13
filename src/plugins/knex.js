@@ -4,7 +4,7 @@ import { Model } from 'objection';
 import knexConfig from '../../knexfile.js';
 
 export default fp(
-  async (fastify, opts) => {
+  async (fastify) => {
     const env = process.env.ENVIRONMENT === 'development'
       ? 'development'
       : 'production';

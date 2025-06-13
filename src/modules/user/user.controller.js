@@ -1,6 +1,9 @@
 import i18next from 'i18next';
+import { EmailExistsError } from './errors/email-exists.error.js';
+import { ForbiddenError } from './errors/forbidden.error.js';
+import { InUseError } from './errors/in-use.error.js';
+import { InvalidCredentialsError } from './errors/invalid-credentials.error.js';
 import { USER_VALIDATION } from './schemas/user-validation.js';
-import { EmailExistsError, ForbiddenError, InvalidCredentialsError } from './user.error.js';
 import { UserService } from './user.service.js';
 
 const { t } = i18next;
@@ -46,7 +49,9 @@ export const UserController = {
 
     logger.info('Displaying user registration form');
     const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-    const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+    const fieldErrors = Object.fromEntries(
+      invalid.map(({ field, message }) => [field, message]),
+    );
     const isAuthenticated = Boolean(request.session.get('userId'));
 
     return reply.view('user/register', {
@@ -102,7 +107,9 @@ export const UserController = {
     logger.info('Displaying login form');
 
     const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-    const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+    const fieldErrors = Object.fromEntries(
+      invalid.map(({ field, message }) => [field, message]),
+    );
     const isAuthenticated = Boolean(request.session.get('userId'));
 
     return reply.view('user/login', {
@@ -200,7 +207,9 @@ export const UserController = {
       );
 
       const { invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(
+        invalid.map(({ field, message }) => [field, message]),
+      );
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ userId: foundUser.id }, 'User retrieved successfully');
 
@@ -267,6 +276,8 @@ export const UserController = {
 
       if (error instanceof ForbiddenError) {
         request.flash('warning', t('user-delete.errors.forbidden'));
+      } else if (error instanceof InUseError) {
+        request.flash('warning', t('user-delete.errors.inUse'));
       } else {
         request.flash('danger', t('user-delete.errors.general'));
       }
@@ -324,3 +335,10 @@ export const UserController = {
     }
   },
 };
+
+export function getUserControllerInfo() {
+  return {
+    name: 'UserController',
+    description: 'Controller for handling user CRUD operations',
+  };
+}

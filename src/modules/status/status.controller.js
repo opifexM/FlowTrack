@@ -1,6 +1,8 @@
 import i18next from 'i18next';
+import { InUseError } from './errors/in-use.error.js';
+import { NameExistsError } from './errors/name-exists.error.js';
+import { NotFoundError } from './errors/not-found.error.js';
 import { STATUS_VALIDATION } from './schemas/status-validation.js';
-import { InUseError, NameExistsError, NotFoundError } from './status.error.js';
 import { StatusService } from './status.service.js';
 
 const { t } = i18next;
@@ -46,7 +48,9 @@ export const StatusController = {
 
     logger.info('Displaying status creation form');
     const { formData: [form] = [{}], invalid = [], ...flash } = reply.flash?.() || {};
-    const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+    const fieldErrors = Object.fromEntries(
+      invalid.map(({ field, message }) => [field, message]),
+    );
     const isAuthenticated = Boolean(request.session.get('userId'));
 
     return reply.view('status/create', {
@@ -110,7 +114,9 @@ export const StatusController = {
       );
 
       const { invalid = [], ...flash } = reply.flash?.() || {};
-      const fieldErrors = Object.fromEntries(invalid.map((validationResult) => [validationResult.field, validationResult.message]));
+      const fieldErrors = Object.fromEntries(
+        invalid.map(({ field, message }) => [field, message]),
+      );
       const isAuthenticated = Boolean(request.session.get('userId'));
       logger.info({ statusId: foundStatus.id }, 'Status retrieved successfully');
 
@@ -230,3 +236,10 @@ export const StatusController = {
     }
   },
 };
+
+export function getStatusControllerInfo() {
+  return {
+    name: 'StatusController',
+    description: 'Controller for handling status CRUD operations',
+  };
+}
