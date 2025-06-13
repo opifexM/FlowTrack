@@ -43,7 +43,7 @@ export const TaskService = {
     const foundTasks = await TaskModel.query(db)
       .modify('byStatus', status)
       .modify('byExecutor', executor)
-      .modify('byCreator', isCreatorUser ? userId : null)
+      .modify('byCreator', isCreatorUser === true ? userId : null)
       .modify('byLabel', label);
 
     logger.info({ count: foundTasks.length }, 'Listed all tasks successfully');
