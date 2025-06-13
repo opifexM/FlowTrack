@@ -1,0 +1,12 @@
+{
+  "existing": {
+    "id": "1",
+    "name": "high-priority"
+  },
+  "new": {
+    "name": "documentation"
+  },
+  "updated": {
+    "name": "refactoring"
+  }
+}

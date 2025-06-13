@@ -13,11 +13,10 @@
   },
   "keywords": [],
   "type": "module",
-    "dependencies": {
-    "fastify": "4.29.1",
+  "dependencies": {
     "@fastify/autoload": "^6.3.1",
-    "@fastify/cors": "^8.5.0",
     "@fastify/cookie": "^7.4.0",
+    "@fastify/cors": "^8.5.0",
     "@fastify/flash": "^5.2.0",
     "@fastify/formbody": "^7.4.0",
     "@fastify/middie": "^8.3.3",
@@ -26,10 +25,11 @@
     "@fastify/swagger": "^8.15.0",
     "@fastify/swagger-ui": "^4.2.0",
     "@fastify/view": "^9.1.0",
+    "dotenv": "^16.5.0",
+    "fastify": "4.29.1",
     "fastify-method-override": "^1.5.10",
     "fastify-method-override-wrapper": "^1.0.6",
     "fastify-yup-schema": "^1.0.4",
-    "dotenv": "^16.5.0",
     "i18next": "^25.2.1",
     "i18next-fs-backend": "^2.6.0",
     "knex": "^3.1.0",
@@ -43,17 +43,19 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.28.0",
+    "@types/jest": "^29.5.14",
     "eslint": "^8.22.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.13.3",
     "eslint-plugin-playwright": "^2.2.0",
     "fastify-cli": "^7.4.0",
-    "@playwright/test": "^1.53.0",
     "jest": "^30.0.0",
     "read-package-json-fast": "^4.0.0"
   },
   "jest": {
-    "testMatch": ["**/__tests__/**/*.test.js"]
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ]
   }
 }

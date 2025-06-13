@@ -1,0 +1,25 @@
+{
+  "existing": {
+    "id": "1",
+    "name": "Setup project",
+    "description": "Initial project setup and configuration",
+    "statusId": "1",
+    "creatorId": 1,
+    "executorId": null,
+    "labelIds": [1]
+  },
+  "new": {
+    "name": "Implement feature X",
+    "description": "Develop and test feature X",
+    "statusId": "1",
+    "creatorId": 1,
+    "executorId": null,
+    "labelIds": []
+  },
+  "updated": {
+    "name": "Setup project v2",
+    "description": "Reconfigure project settings",
+    "statusId": "2",
+    "executorId": 1
+  }
+}

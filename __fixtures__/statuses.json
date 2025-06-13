@@ -1,0 +1,12 @@
+{
+  "existing": {
+    "id": "1",
+    "name": "in-progress"
+  },
+  "new": {
+    "name": "pending-review"
+  },
+  "updated": {
+    "name": "completed"
+  }
+}

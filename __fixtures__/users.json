@@ -1,0 +1,33 @@
+{
+  "users": {
+    "existing": {
+      "id": 1,
+      "firstName": "Alexander",
+      "lastName": "Johnson",
+      "email": "alex.johnson@techcorp.com",
+      "password": "SecurePass2024!"
+    },
+    "new": {
+      "firstName": "Sarah",
+      "lastName": "Williams",
+      "email": "sarah.williams@devteam.io",
+      "password": "MyStr0ngP@ssw0rd"
+    },
+    "invalid": {
+      "firstName": "",
+      "lastName": "",
+      "email": "invalid-email-format",
+      "password": "123"
+    }
+  },
+  "session": {
+    "valid": {
+      "email": "alex.johnson@techcorp.com",
+      "password": "SecurePass2024!"
+    },
+    "invalid": {
+      "email": "unknown.user@nowhere.com",
+      "password": "IncorrectPassword123"
+    }
+  }
+}
