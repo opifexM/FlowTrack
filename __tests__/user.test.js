@@ -7,6 +7,8 @@ import {
 } from './helpers/utils.js';
 import testData from '../__fixtures__/users.json';
 
+const validCredentials = testData.session.valid;
+
 describe('User Management Routes', () => {
   let server;
   let request;
@@ -37,7 +39,9 @@ describe('User Management Routes', () => {
       const res = await request({
         method: 'POST',
         url: '/session',
-        payload: { data: testData.session.valid },
+        payload: {
+          data: validCredentials,
+        },
       });
       expect(res.statusCode).toBe(302);
       expect(res.headers['set-cookie']).toBeDefined();
@@ -48,7 +52,9 @@ describe('User Management Routes', () => {
       const res = await request({
         method: 'POST',
         url: '/session',
-        payload: { data: testData.session.invalid },
+        payload: {
+          data: testData.session.invalid,
+        },
       });
       expect(res.statusCode).toBe(302);
       expect(res.headers.location).toBe('/session/new');
@@ -61,7 +67,7 @@ describe('User Management Routes', () => {
           url: '/session',
           payload: { _method: 'delete' },
         },
-        testData.session.valid,
+        validCredentials,
       );
       expect(res.statusCode).toBe(302);
       expect(res.headers.location).toBe('/');
@@ -70,7 +76,7 @@ describe('User Management Routes', () => {
     it('DELETE /session should logout and redirect to root', async () => {
       const res = await authRequest(
         { method: 'DELETE', url: '/session' },
-        testData.session.valid,
+        validCredentials,
       );
       expect(res.statusCode).toBe(302);
       expect(res.headers.location).toBe('/');
@@ -129,7 +135,7 @@ describe('User Management Routes', () => {
         it('GET /users/:id/edit should return 200 and show user data', async () => {
           const res = await authRequest(
             { method: 'GET', url: `/users/${id}/edit` },
-            testData.session.valid,
+            validCredentials,
           );
           expect(res.statusCode).toBe(200);
           expect(res.payload).toContain(
