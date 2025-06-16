@@ -1,10 +1,7 @@
 [![Actions Status](https://github.com/opifexM/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/opifexM/backend-project-6/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=opifexM_FlowTrack&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=opifexM_FlowTrack)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=opifexM_FlowTrack&metric=bugs)](https://sonarcloud.io/summary/new_code?id=opifexM_FlowTrack)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=opifexM_FlowTrack&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=opifexM_FlowTrack)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=opifexM_FlowTrack&metric=coverage)](https://sonarcloud.io/summary/new_code?id=opifexM_FlowTrack)
-
-Web-Site: https://flowtrack-14gc.onrender.com/
 
 # FlowTrack
 
